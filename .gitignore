@@ -1,0 +1,13 @@
+.vs/
+packages/*
+**/bin/
+**/obj/
+*.suo
+
+Debug/*
+Release/*
+x64/Release/*
+GTAUtil.VC.db
+GTAUtil.VC.VC.opendb
+*.csproj.user
+
