@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTAUtil", "gtautil\GTAUtil.csproj", "{59E144FB-CD95-4A35-8388-56E9F474639E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{59E144FB-CD95-4A35-8388-56E9F474639E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59E144FB-CD95-4A35-8388-56E9F474639E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59E144FB-CD95-4A35-8388-56E9F474639E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{59E144FB-CD95-4A35-8388-56E9F474639E}.Debug|x64.Build.0 = Debug|Any CPU
+		{59E144FB-CD95-4A35-8388-56E9F474639E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59E144FB-CD95-4A35-8388-56E9F474639E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59E144FB-CD95-4A35-8388-56E9F474639E}.Release|x64.ActiveCfg = Release|Any CPU
+		{59E144FB-CD95-4A35-8388-56E9F474639E}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {72A01E4E-59B1-48E3-B901-FCEDBB78082D}
+	EndGlobalSection
+EndGlobal

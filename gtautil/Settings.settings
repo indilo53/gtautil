@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="GTAUtil" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="GTAFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files (x86)\Steam\SteamApps\common\Grand Theft Auto V</Value>
+    </Setting>
+    <Setting Name="CacheSize" Type="System.Int64" Scope="User">
+      <Value Profile="(Default)">2147483648</Value>
+    </Setting>
+    <Setting Name="CacheTime" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
