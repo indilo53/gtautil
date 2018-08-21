@@ -35,3 +35,9 @@ Find ymap / ytyp / mlo room
 ```
 gtautil find --position 123.12,456.45,789.65
 ```
+
+Rebuild cache from current GTAV installation
+
+```
+gtautil buildcache
+```

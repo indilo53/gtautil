@@ -2,13 +2,6 @@
 
 namespace GTAUtil
 {
-    [Verb("calcymapextents")]
-    public class CalcYmapExtentsOptions
-    {
-        [Option('i', "input")]
-        public List<string> InputFiles { get; set; }
-    }
-
     [Verb("genpropdefs")]
     public class GenPropDefsOptions
     {
@@ -59,16 +52,6 @@ namespace GTAUtil
 
         [Option('r', "rotation")]
         public List<float> Rotation { get; set; }
-    }
-
-    [Verb("ymap2mlo")]
-    public class Ymap2MloOptions
-    {
-        [Option('y', "ymap")]
-        public string Ymap { get; set; }
-
-        [Option('n', "name")]
-        public string Name { get; set; }
     }
 
     [Verb("find")]
