@@ -1,6 +1,6 @@
 # gtautil
 
-Generate archetype definitionss (.ytyp)
+Generate archetype definitions (.ytyp)
 
 ```
 gtautil genpropdefs --input path/to/*.ydr
