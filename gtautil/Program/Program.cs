@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Xml;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
-using RageLib.Hash;
-using RageLib.GTA5.Cryptography;
-using RageLib.GTA5.Cryptography.Helpers;
-using RageLib.Resources.GTA5;
-using RageLib.GTA5.Utilities;
-using RageLib.GTA5.ArchiveWrappers;
+﻿using Newtonsoft.Json.Linq;
 using RageLib.Archives;
 using RageLib.GTA5.Archives;
-using System.Text;
-using System.IO.Compression;
-using RageLib.Resources.GTA5.PC.Drawables;
-using RageLib.Resources;
+using RageLib.GTA5.ArchiveWrappers;
+using RageLib.GTA5.Cryptography;
+using RageLib.GTA5.Cryptography.Helpers;
 using RageLib.GTA5.ResourceWrappers.PC.Meta.Structures;
+using RageLib.GTA5.Utilities;
+using RageLib.Hash;
+using RageLib.Resources.GTA5.PC.Drawables;
 using RageLib.Resources.GTA5.PC.GameFiles;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace GTAUtil
 {
@@ -297,34 +294,67 @@ namespace GTAUtil
         public static int GetDLCLevel(string path)  // path must be a sub dir/file of the dlc
         {
             path = path.ToLowerInvariant();
-            var pathRegex = new Regex(@"\\dlcpacks\\([a-z0-9_]*)\\");
-            var pathRegex2 =  new Regex(@"\\dlc_patch\\([a-z0-9_]*)\\");
 
-            var match = pathRegex.Match(path);
-            var match2 = pathRegex2.Match(path);
+            string[] split = path.Replace('/', '\\').Split('\\');
 
-            if (match.Success)
-                return Array.IndexOf(DLCList, match.Groups[1].Value);
-            else if (match2.Success)
-                return Array.IndexOf(DLCList, match2.Groups[1].Value);
+            if(split.Length == 1)
+            {
+                string name = Path.GetFileNameWithoutExtension(path);
+                string ext = Path.GetExtension(path);
+
+                if (ext.Length > 0)
+                    ext = ext.Substring(1);
+
+                uint hash = Jenkins.Hash(name.ToLowerInvariant());
+
+                if(Files.ContainsKey(ext) && Files[ext].ContainsKey(hash))
+                {
+                    Files[ext].TryGetValue(hash, out RpfFileEntry rpfFileEntry);
+                    return rpfFileEntry.DlcLevel;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
             else
-                return 0;
+            {
+                var pathRegex = new Regex(@"\\dlcpacks\\([a-z0-9_]*)\\");
+                var pathRegex2 = new Regex(@"\\dlc_patch\\([a-z0-9_]*)\\");
+
+                var match = pathRegex.Match(path);
+                var match2 = pathRegex2.Match(path);
+
+                if (match.Success)
+                    return Array.IndexOf(DLCList, match.Groups[1].Value);
+                else if (match2.Success)
+                    return Array.IndexOf(DLCList, match2.Groups[1].Value);
+                else
+                    return 0;
+            }
 
         }
 
         public static Drawable GetDrawable(uint hash)
         {
-            if (!(DrawableCache.TryGetValue(hash, out Drawable drawable)))
+            Drawable drawable = null;
+
+            if(!DrawableCache.ContainsKey(hash))
             {
-                if ((Files["ydr"].TryGetValue(hash, out RpfFileEntry rpfFileEntry)))
+                if(Files.ContainsKey("ydr") && Files["ydr"].ContainsKey(hash))
                 {
+                    Files["ydr"].TryGetValue(hash, out RpfFileEntry rpfFileEntry);
+
                     Utils.ForFile(rpfFileEntry.FullFileName, (file, encryption) =>
                     {
                         DrawableCache[hash] = Utils.GetResourceData<Drawable>((IArchiveResourceFile)file);
                         drawable = DrawableCache[hash];
                     });
                 }
-
+            }
+            else
+            {
+                drawable = DrawableCache[hash];
             }
 
             return drawable;

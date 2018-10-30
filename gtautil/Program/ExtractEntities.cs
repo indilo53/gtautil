@@ -124,6 +124,7 @@ namespace GTAUtil
                     ymap.Save(opts.Name + "\\" + room.Name + ".ymap");
                 }
 
+                /*
                 for(int portalId=0; portalId < mlo.Portals.Count; portalId++)
                 {
                     var portal = mlo.Portals[portalId];
@@ -200,6 +201,7 @@ namespace GTAUtil
 
                     File.WriteAllText(opts.Name + "\\portal_" + portalId.ToString().PadLeft(3, '0') + ".json", jsonString);
                 }
+                */
             });
         }
     }

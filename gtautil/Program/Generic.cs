@@ -45,11 +45,15 @@ namespace GTAUtil
                     {
                         var name = Path.GetFileNameWithoutExtension(infos[i].Name);
                         var ext = Path.GetExtension(infos[i].Name);
+
+                        if (ext.Length > 0)
+                            ext = ext.Substring(1);
+
                         var hash = Jenkins.Hash(name.ToLowerInvariant());
 
                         switch (ext)
                         {
-                            case ".ydr":
+                            case "ydr":
                                 {
                                     var ydr = new YdrFile();
                                     ydr.Load(infos[i].FullName);

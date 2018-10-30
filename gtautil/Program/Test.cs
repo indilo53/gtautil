@@ -19,10 +19,6 @@ namespace GTAUtil
             CommandLine.Parse<TestOptions>(args, (opts, gOpts) =>
             {
                 Init(args);
-
-                var ybn = new YbnFile();
-
-                ybn.Load(@"C:\Users\NGD\Desktop\hei_heist_ornate_bank.ybn");
             });
         }
     }
