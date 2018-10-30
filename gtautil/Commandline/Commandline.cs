@@ -12,27 +12,28 @@ namespace GTAUtil
         /// <summary>
         /// Parse a parsing target T
         /// </summary>
-        public static void Parse<T>(string[] args, Action<T> callback) where T : class, new()
+        public static void Parse<T>(string[] args, Action<T, GenericOptions> callback) where T : class, new()
         {
+            GenericOptions gParsingTarget = null;
             T parsingTarget = null;
+
+            var gVerbAttribute = GetVerbAttribute<GenericOptions>();
             var verbAttribute = GetVerbAttribute<T>();
 
-            if (args.Length > 0 && args[0] == verbAttribute.Name)
+            if (args.Length > 0 && (args[0] == verbAttribute.Name || verbAttribute.Name == "generic"))
             {
+                gParsingTarget = new GenericOptions();
                 parsingTarget = new T();
+
+                AssignOptions(gParsingTarget, args);
                 AssignOptions(parsingTarget, args);
-
-                if (args.Length == 0 || (args.Length > 1 && args[1] == "help"))
-                {
-                    Console.Error.Write(GenHelp<T>());
-                    return;
-                }
             }
 
-            if (parsingTarget != null)
+            if (gParsingTarget != null && parsingTarget != null)
             {
-                callback(parsingTarget);
+                callback(parsingTarget, gParsingTarget);
             }
+
         }
 
         /// <summary>
@@ -103,7 +104,6 @@ namespace GTAUtil
                         if (type == typeof(bool)) // Parse bool (switch)
                         {
                             attr.Item1.SetValue(obj, !(bool)attr.Item2.Default);
-
                         }
                         else if (type == typeof(string)) // Parse string
                         {
@@ -189,6 +189,9 @@ namespace GTAUtil
 
             foreach (var verb in Verbs.Registered)
             {
+                if (verb.Name == "generic")
+                    continue;
+
                 if (verb.Name.Length > longerVerbLength)
                 {
                     longerVerbLength = verb.Name.Length;
@@ -197,6 +200,9 @@ namespace GTAUtil
 
             foreach (var verb in Verbs.Registered)
             {
+                if (verb.Name == "generic")
+                    continue;
+
                 int lengthDiff = longerVerbLength - verb.Name.Length;
                 sb.AppendLine("  " + verb.Name + new string(' ', 4 + lengthDiff) + verb.HelpText);
             }

@@ -39,9 +39,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Commandline\Arguments.cs" />
-    <Compile Include="Commandline.cs" />
+    <Compile Include="Commandline\Commandline.cs" />
     <Compile Include="Commandline\Options.cs" />
     <Compile Include="Glob.cs" />
+    <Compile Include="Program\MergeYmap.cs" />
+    <Compile Include="Program\GetDLCList.cs" />
+    <Compile Include="Program\ExtractEntities.cs" />
+    <Compile Include="Program\Generic.cs" />
+    <Compile Include="Program\Test.cs" />
+    <Compile Include="Program\GenPedDefinitions.cs" />
+    <Compile Include="Program\Find.cs" />
+    <Compile Include="Program\BuildCache.cs" />
+    <Compile Include="Program\CompileGxt2.cs" />
+    <Compile Include="Program\InjectEntities.cs" />
+    <Compile Include="Program\ExportMeta.cs" />
+    <Compile Include="Program\ImportMeta.cs" />
+    <Compile Include="Program\GenPropDefs.cs" />
     <Compile Include="Resource.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -53,7 +66,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Utils.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Program\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -76,10 +89,10 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="RageLib">
-      <HintPath>..\..\gta-toolkit\RageLib.GTA5\bin\Release\RageLib.dll</HintPath>
+      <HintPath>Libraries\gta-toolkit\RageLib.GTA5\bin\Release\RageLib.dll</HintPath>
     </Reference>
     <Reference Include="RageLib.GTA5">
-      <HintPath>..\..\gta-toolkit\RageLib.GTA5\bin\Release\RageLib.GTA5.dll</HintPath>
+      <HintPath>Libraries\gta-toolkit\RageLib.GTA5\bin\Release\RageLib.GTA5.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.4.1.0\lib\net45\SharpDX.dll</HintPath>

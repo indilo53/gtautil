@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // Les informations générales relatives à un assembly dépendent de
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
-[assembly: AssemblyTitle("ytyp-tool")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("GTAUtil")]
+[assembly: AssemblyDescription("Utility to work with GTAV game files")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ytyp-tool")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyProduct("GTAUtil")]
+[assembly: AssemblyCopyright("Copyright © Jérémie N'gadi 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

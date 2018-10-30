@@ -1,0 +1,3 @@
+[submodule "gtautil/Libraries/gta-toolkit"]
+	path = gtautil/Libraries/gta-toolkit
+	url = https://github.com/indilo53/gta-toolkit
