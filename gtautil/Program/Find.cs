@@ -22,13 +22,13 @@ namespace GTAUtil
                     return;
                 }
 
+                Init(args);
+
                 if (Cache == null)
                 {
                     Console.Error.WriteLine("Please build cache first with buildcache");
                     return;
                 }
-
-                Init(args);
 
                 var c = CultureInfo.InvariantCulture;
 
