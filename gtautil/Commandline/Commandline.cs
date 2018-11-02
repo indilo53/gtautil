@@ -4,6 +4,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 
 namespace GTAUtil
 {
@@ -131,7 +132,9 @@ namespace GTAUtil
                         {
                             if (args.Length > i + 1)
                             {
-                                attr.Item1.SetValue(obj, Convert.ToSingle(args[i + 1].Replace('.', ',')));
+                                float.TryParse(args[i + 1], NumberStyles.Any, CultureInfo.InvariantCulture, out float val);
+
+                                attr.Item1.SetValue(obj, val);
                             }
                             else
                             {
@@ -158,7 +161,10 @@ namespace GTAUtil
                             var listStr = args[i + 1].Split(',');
 
                             for (int j = 0; j < listStr.Length; j++)
-                                list.Add(Convert.ToSingle(listStr[j].Replace('.', ',')));
+                            {
+                                float.TryParse(listStr[j], NumberStyles.Any, CultureInfo.InvariantCulture, out float val);
+                                list.Add(val);
+                            }
 
                             attr.Item1.SetValue(obj, list);
                         }
