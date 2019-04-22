@@ -32,7 +32,7 @@ namespace GTAUtil
                             if (rageArchiveWrapper.archive_.Encryption != RageLib.GTA5.Archives.RageArchiveEncryption7.None)
                             {
                                 Console.WriteLine("File is already encrypted, nothing to do");
-                                return;
+                                continue;
                             }
 
                             rageArchiveWrapper.archive_.Encryption = RageLib.GTA5.Archives.RageArchiveEncryption7.NG;

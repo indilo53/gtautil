@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.IO.Abstractions;
+using Ganss.IO;
 using SharpDX;
 using RageLib.Hash;
 using RageLib.Resources.GTA5.PC.Meta;
@@ -15,21 +17,20 @@ using RageLib.GTA5.Cryptography;
 using System.IO.Compression;
 using RageLib.GTA5.Utilities;
 using RageLib.GTA5.ArchiveWrappers;
-using RageLib.Resources.GTA5.PC.GameFiles;
 
 namespace GTAUtil
 {
     public static class Utils
     {
         /* Generic Utils */
-        public static FileSystemInfo[] Expand(string pattern)
+        public static FileSystemInfoBase[] Expand(string pattern)
         {
-            return Glob.Glob.Expand(pattern.Replace('/', '\\')).ToArray();
+            return Glob.Expand(pattern.Replace('/', '\\')).ToArray();
         }
 
-        public static FileSystemInfo[] Expand(string[] patterns)
+        public static FileSystemInfoBase[] Expand(string[] patterns)
         {
-            var files = new List<FileSystemInfo>();
+            var files = new List<FileSystemInfoBase>();
 
             for (int i = 0; i < patterns.Length; i++)
             {
@@ -39,7 +40,7 @@ namespace GTAUtil
             return files.ToArray();
         }
 
-        public static FileSystemInfo[] Expand(IEnumerable<string> patterns)
+        public static FileSystemInfoBase[] Expand(IEnumerable<string> patterns)
         {
             return Expand(patterns.ToArray());
         }
@@ -113,7 +114,7 @@ namespace GTAUtil
             //}
             //else if(fsInfo is FileInfo)
             //{
-                return File.ReadAllBytes(fsInfo.FullName);
+            return File.ReadAllBytes(fsInfo.FullName);
             //}
 
             //return null;
@@ -219,7 +220,7 @@ namespace GTAUtil
 
         public static uint Hash(string str)
         {
-            if(!uint.TryParse(str, out uint hash))
+            if (!uint.TryParse(str, out uint hash))
             {
                 hash = Jenkins.Hash(str);
                 Jenkins.Ensure(str);
@@ -247,7 +248,7 @@ namespace GTAUtil
         {
             var sum = new Vector3(0f, 0f, 0f);
 
-            for(int i=0; i<points.Length; i++)
+            for (int i = 0; i < points.Length; i++)
             {
                 sum.X += points[i].X;
                 sum.Y += points[i].Y;
@@ -333,13 +334,13 @@ namespace GTAUtil
 
                 // Console.WriteLine(Jenkins.GetString(entity.ArchetypeName));
 
-                if(drawable != null)
+                if (drawable != null)
                 {
                     Quaternion orientation = new Quaternion(entity.Rotation);
 
                     Vector3 dcenter = ((Vector3)drawable.BoundingCenter) * entity.ScaleXY;
-                    Vector3 dbbmin  = ((Vector3)(Vector4)drawable.BoundingBoxMin) * entity.ScaleXY - dcenter;
-                    Vector3 dbbmax  = ((Vector3)(Vector4)drawable.BoundingBoxMax) * entity.ScaleXY - dcenter;
+                    Vector3 dbbmin = ((Vector3)(Vector4)drawable.BoundingBoxMin) * entity.ScaleXY - dcenter;
+                    Vector3 dbbmax = ((Vector3)(Vector4)drawable.BoundingBoxMax) * entity.ScaleXY - dcenter;
 
                     Vector3 c1 = Utils.RotateTransform(orientation, dbbmin, Vector3.Zero);
                     Vector3 c2 = Utils.RotateTransform(orientation, dbbmax, Vector3.Zero);
@@ -360,7 +361,7 @@ namespace GTAUtil
                 }
 
             }
-        
+
             return new Vector3[2][]
             {
                 new Vector3[2] { emin, emax },
