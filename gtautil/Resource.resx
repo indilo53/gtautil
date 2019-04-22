@@ -121,13 +121,19 @@
   <data name="gtav_aes_key" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\gtav_aes_key.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="gtav_hash_lut" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\gtav_hash_lut.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="gtav_ng_key" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\gtav_ng_key.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="gtav_ng_decrypt_tables" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\gtav_ng_decrypt_tables.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="gtav_ng_key" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\gtav_ng_key.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="gtav_ng_encrypt_tables" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\gtav_ng_encrypt_tables.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="gtav_ng_encrypt_luts" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\gtav_ng_encrypt_luts.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="gtav_hash_lut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\gtav_hash_lut.dat;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

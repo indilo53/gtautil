@@ -93,6 +93,26 @@ namespace GTAUtil {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Byte[].
         /// </summary>
+        internal static byte[] gtav_ng_encrypt_luts {
+            get {
+                object obj = ResourceManager.GetObject("gtav_ng_encrypt_luts", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Byte[].
+        /// </summary>
+        internal static byte[] gtav_ng_encrypt_tables {
+            get {
+                object obj = ResourceManager.GetObject("gtav_ng_encrypt_tables", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Byte[].
+        /// </summary>
         internal static byte[] gtav_ng_key {
             get {
                 object obj = ResourceManager.GetObject("gtav_ng_key", resourceCulture);
