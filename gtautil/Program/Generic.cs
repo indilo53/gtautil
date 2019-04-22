@@ -40,6 +40,7 @@ namespace GTAUtil
                     Console.WriteLine("Loading mods");
 
                     var infos = Utils.Expand(opts.Mods);
+                    int count = 0;
 
                     for(int i=0; i<infos.Length; i++)
                     {
@@ -58,12 +59,15 @@ namespace GTAUtil
                                     var ydr = new YdrFile();
                                     ydr.Load(infos[i].FullName);
                                     DrawableCache[hash] = ydr.Drawable;
+                                    count++;
                                     break;
                                 }
 
                             default: break;
                         }
                     }
+
+                    Console.Error.WriteLine("Loaded " + count + " mods");
                 }
 
                 return;

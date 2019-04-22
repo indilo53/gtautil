@@ -34,11 +34,10 @@ namespace GTAUtil
                     return;
                 }
 
-                Init(args);
+                // Init(args);
 
                 var ymapInfos = Utils.Expand(opts.Ymap);
                 var bbs = new List<Tuple<Vector3, Vector3>>();
-                var drawableCache = new Dictionary<uint, Drawable>();
                 var ymap = new YmapFile();
 
                 for(int i=0; i< ymapInfos.Length; i++)
@@ -54,29 +53,15 @@ namespace GTAUtil
                 {
                     var entity = ymap.CMapData.Entities[i];
 
-                    if (entity.Guid == 0)
+                    var random = new Random();
+
+                    do
                     {
-                        var random = new Random();
-
-                        do
-                        {
-                            entity.Guid = (uint)random.Next(1000000, Int32.MaxValue);
-                        }
-                        while (ymap.CMapData.Entities.Count(e => e.Guid == entity.Guid) > 1);
-
-                        Console.WriteLine("[" + i + "] Setting random GUID => " + entity.Guid);
+                        entity.Guid = (uint)random.Next(1000000, Int32.MaxValue);
                     }
+                    while (ymap.CMapData.Entities.Count(e => e.Guid == entity.Guid) > 1);
 
-                    if (!(drawableCache.TryGetValue(entity.ArchetypeName, out Drawable drawable)))
-                    {
-                        if ((Files["ydr"].TryGetValue(entity.ArchetypeName, out RpfFileEntry rpfFileEntry)))
-                        {
-                            Utils.ForFile(rpfFileEntry.FullFileName, (file, encryption) =>
-                            {
-                                drawableCache[entity.ArchetypeName] = Utils.GetResourceData<Drawable>((IArchiveResourceFile)file);
-                            });
-                        }
-                    }
+                    Console.WriteLine("[" + i + "] Setting random GUID => " + entity.Guid);
                 }
 
                 var extents = Utils.CalcExtents(ymap.CMapData.Entities);

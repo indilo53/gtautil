@@ -273,7 +273,7 @@ namespace GTAUtil
                             if (anchor == Unk_2834549053.NUM_ANCHORS)
                                 continue;
 
-                            int max = (opts.ReserveEntries > ymt.Unk_376833625.PropInfo.Props[anchor].Count) ? opts.ReserveEntries : ymt.Unk_376833625.PropInfo.Props[anchor].Count;
+                            int max = (opts.ReservePropEntries > ymt.Unk_376833625.PropInfo.Props[anchor].Count) ? opts.ReservePropEntries : ymt.Unk_376833625.PropInfo.Props[anchor].Count;
 
                             pCount[anchor] = (ymt.Unk_376833625.PropInfo.Props[anchor] ?? new List<MUnk_94549140>()).Count;
                         }
@@ -342,6 +342,8 @@ namespace GTAUtil
                                         }
 
                                         def.Unk_1756136273.Add(item);
+
+                                        cCount[component]++;
                                     }
 
                                     ymt.Unk_376833625.Components[component] = def;
@@ -407,21 +409,22 @@ namespace GTAUtil
                                             item.TexData.Add(texture);
                                         }
 
-                                        // Get or create linled anchor
+                                        // Get or create linked anchor
                                         var aanchor = ymt.Unk_376833625.PropInfo.AAnchors.Find(e => e.Anchor == anchor);
 
                                         if (aanchor == null)
                                         {
                                             aanchor = new MCAnchorProps(ymt.Unk_376833625.PropInfo);
-                                            aanchor.PropsMap[item] = 1;
+                                            aanchor.PropsMap[item] = (byte) item.TexData.Count;
                                             ymt.Unk_376833625.PropInfo.AAnchors.Add(aanchor);
                                         }
                                         else
                                         {
-                                            aanchor.PropsMap[item] = 1;
+                                            aanchor.PropsMap[item] = (byte) item.TexData.Count;
                                         }
 
                                         defs.Add(item);
+                                        pCount[anchor]++;
                                     }
 
                                     ymt.Unk_376833625.PropInfo.Props[anchor] = defs;
@@ -469,7 +472,7 @@ namespace GTAUtil
                                 continue;
 
                             int count = ymt.Unk_376833625.PropInfo.Props[anchor]?.Count ?? 0;
-                            int max = (opts.ReserveEntries > count) ? opts.ReserveEntries : count;
+                            int max = (opts.ReservePropEntries > count) ? opts.ReservePropEntries : count;
                             var defs = ymt.Unk_376833625.PropInfo.Props[anchor] ?? new List<MUnk_94549140>();
 
                             for (int i = count; i < max; i++)
@@ -539,7 +542,7 @@ namespace GTAUtil
                                     continue;
 
                                 int count = ymt.Unk_376833625.PropInfo.Props[anchor]?.Count ?? 0;
-                                int max = (opts.ReserveEntries > count) ? opts.ReserveEntries : count;
+                                int max = (opts.ReservePropEntries > count) ? opts.ReservePropEntries : count;
 
                                 overrideInfos["props"][AnchorFilePrefix[anchor]] = new JObject() { ["start"] = pCount[anchor], ["end"] = max };
                             }
@@ -554,7 +557,7 @@ namespace GTAUtil
                         }
                     }
 
-                    // Check which directories contains addon compoent / props
+                    // Check which directories contains addon component / props
                     for (int i=0; i<dirs.Length; i++)
                     {
                         bool found = false;

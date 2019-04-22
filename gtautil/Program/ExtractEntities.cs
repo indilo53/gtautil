@@ -8,6 +8,7 @@ using RageLib.Resources.GTA5.PC.Meta;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RageLib.Hash;
 
 namespace GTAUtil
 {
@@ -57,8 +58,22 @@ namespace GTAUtil
 
                 for (int i = 0; i < ytyp.CMapTypes.MloArchetypes.Count; i++)
                 {
-                    mlo = ytyp.CMapTypes.MloArchetypes[i];
-                    break;
+                   if(opts.MloName == null)
+                   {
+                        mlo = ytyp.CMapTypes.MloArchetypes[i];
+                        break;
+                   }
+                   else
+                   {
+                        uint mloNameHash = Jenkins.Hash(opts.MloName.ToLowerInvariant());
+
+                        if (mloNameHash == ytyp.CMapTypes.MloArchetypes[i].Name)
+                        {
+                            Console.Error.WriteLine("Found MLO => " + opts.MloName);
+                            mlo = ytyp.CMapTypes.MloArchetypes[i];
+                            break;
+                        }
+                   }
                 }
 
                 if (mlo == null)
@@ -72,8 +87,6 @@ namespace GTAUtil
                     var room = mlo.Rooms[roomId];
                     var ymap = new YmapFile();
                     var ymapEntities = new List<MCEntityDef>();
-                    var entitiesExtents = new List<Tuple<Vector3, Vector3>>();
-                    var streamingExtents = new List<Tuple<Vector3, Vector3>>();
 
                     Console.WriteLine("Room => " + room.Name + " (" + room.AttachedObjects.Count + " entities)");
 
@@ -122,6 +135,69 @@ namespace GTAUtil
                     Directory.CreateDirectory(opts.Name);
 
                     ymap.Save(opts.Name + "\\" + room.Name + ".ymap");
+                }
+
+                if(mlo.EntitySets != null)
+                {
+                    for (int i = 0; i < mlo.EntitySets.Count; i++)
+                    {
+                        var entitySet = mlo.EntitySets[i];
+
+                        Directory.CreateDirectory(opts.Name + "\\entitysets\\" + entitySet.Name);
+
+                        for (int roomId = 0; roomId < mlo.Rooms.Count; roomId++)
+                        {
+                            var room = mlo.Rooms[roomId];
+                            var ymap = new YmapFile();
+                            var ymapEntities = new List<MCEntityDef>();
+
+                            Console.WriteLine("EntitySet => " + entitySet.Name + " [" + room.Name + "] (" + entitySet.Entities.Count + " entities)");
+
+                            for (int j = 0; j < entitySet.Entities.Count; j++)
+                            {
+                                int targetRoom = (int) entitySet.Locations[j];
+
+                                if (targetRoom != roomId)
+                                    continue;
+
+                                var entity = entitySet.Entities[j];
+                                var entityRotation = new Quaternion(entity.Rotation.X, entity.Rotation.Y, entity.Rotation.Z, entity.Rotation.W);
+
+                                Utils.Mlo2World(entity, mlo, position, rotation);
+
+                                entity.LodLevel = Unk_1264241711.LODTYPES_DEPTH_HD;
+
+                                if (entity.Guid == 0)
+                                {
+                                    var random = new Random();
+
+                                    do
+                                    {
+                                        entity.Guid = (uint)random.Next(1000000, Int32.MaxValue);
+                                    }
+                                    while (mlo.Entities.Count(e => e.Guid == entity.Guid) == 1);
+
+                                    Console.WriteLine("[" + i + "] Setting random GUID => " + entity.Guid);
+                                }
+
+                                ymapEntities.Add(entity);
+                            }
+
+                            ymap.CMapData.Entities = ymapEntities;
+
+                            var extents = Utils.CalcExtents(ymap.CMapData.Entities);
+
+                            ymap.CMapData.EntitiesExtentsMin = extents[0][0];
+                            ymap.CMapData.EntitiesExtentsMax = extents[0][1];
+                            ymap.CMapData.StreamingExtentsMin = extents[1][0];
+                            ymap.CMapData.StreamingExtentsMax = extents[1][1];
+
+                            Console.WriteLine(extents[0][0].X + " " + extents[0][0].Y + " " + extents[0][0].Z);
+                            Console.WriteLine(extents[0][1].X + " " + extents[0][1].Y + " " + extents[0][1].Z);
+
+                            ymap.Save(opts.Name + "\\entitysets\\" + entitySet.Name + "\\entityset_" + entitySet.Name + "_" + room.Name + ".ymap");
+                        }
+                    }
                 }
 
                 /*

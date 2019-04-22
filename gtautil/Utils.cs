@@ -167,7 +167,8 @@ namespace GTAUtil
 
         public static void ForFile(string fullFileName, Action<IArchiveFile, RageArchiveEncryption7> cb)
         {
-            string[] split = fullFileName.Replace('/', '\\').Split(new string[] { ".rpf" }, StringSplitOptions.None);
+            fullFileName = fullFileName.Replace('/', '\\').Replace(Settings.Default.GTAFolder + "\\", "");
+            string[] split = fullFileName.Split(new string[] { ".rpf" }, StringSplitOptions.None);
 
             for (int i = 0; i < split.Length - 1; i++)
                 split[i] = split[i] + ".rpf";
@@ -183,6 +184,8 @@ namespace GTAUtil
 
                 ArchiveUtilities.ForEachFile(split[0], inputArchive.Root, inputArchive.archive_.Encryption, (string currFullFileName, IArchiveFile file, RageArchiveEncryption7 encryption) =>
                 {
+                    currFullFileName = currFullFileName.Replace('/', '\\');
+
                     if (currFullFileName == fullFileName)
                     {
                         cb(file, encryption);
@@ -212,6 +215,17 @@ namespace GTAUtil
 
             return "hash_" + uh.ToString("X").PadLeft(8, '0');
 
+        }
+
+        public static uint Hash(string str)
+        {
+            if(!uint.TryParse(str, out uint hash))
+            {
+                hash = Jenkins.Hash(str);
+                Jenkins.Ensure(str);
+            }
+
+            return hash;
         }
 
         public static Vector3 Multiply(Quaternion rotation, Vector3 point)
@@ -249,20 +263,27 @@ namespace GTAUtil
             var objRot = new Quaternion(entity.Rotation.X, entity.Rotation.Y, entity.Rotation.Z, entity.Rotation.W);
             var rotationDiff = objRot * mloWorldRotation;    // Multiply initial entity rotation by mlo rotation 
 
+            rotationDiff.Normalize();
+
             entity.Position -= mloWorldPosition;    // Substract mlo world coords from entity world coords
             entity.Position = Utils.RotateTransform(Quaternion.Invert(mloWorldRotation), entity.Position, Vector3.Zero);   // Rotate entity around center of mlo instance (mlo entities rotations in space are inverted)
 
             entity.Rotation = new Vector4(rotationDiff.X, rotationDiff.Y, rotationDiff.Z, rotationDiff.W);
         }
 
-        public static Vector3 World2Mlo(Vector3 position, MCMloArchetypeDef mlo, Vector3 mloWorldPosition, Quaternion mloWorldRotation)
+        public static Tuple<Vector3, Vector4> World2Mlo(Vector3 position, Vector4 rotation, Vector3 mloWorldPosition, Quaternion mloWorldRotation)
         {
-            var newPosition = new Vector3(position.X, position.Y, position.Z);
+            var newPos = new Vector3(position.X, position.Y, position.Z);
+            var rotationDiff = new Quaternion(rotation.X, rotation.Y, rotation.Z, rotation.W) * mloWorldRotation;    // Multiply initial entity rotation by mlo rotation 
 
-            newPosition -= mloWorldPosition;
-            newPosition = Utils.RotateTransform(Quaternion.Invert(mloWorldRotation), newPosition, Vector3.Zero);
+            rotationDiff.Normalize();
 
-            return newPosition;
+            newPos -= mloWorldPosition;    // Substract mlo world coords from entity world coords
+            newPos = Utils.RotateTransform(Quaternion.Invert(mloWorldRotation), position, Vector3.Zero);   // Rotate entity around center of mlo instance (mlo entities rotations in space are inverted)
+
+            var newRot = new Vector4(rotationDiff.X, rotationDiff.Y, rotationDiff.Z, rotationDiff.W);
+
+            return new Tuple<Vector3, Vector4>(newPos, newRot);
         }
 
         public static void Mlo2World(MCEntityDef entity, MCMloArchetypeDef mlo, Vector3 mloWorldPosition, Quaternion mloWorldRotation)
@@ -273,17 +294,26 @@ namespace GTAUtil
             entity.Position += mloWorldPosition;
 
             var rotationDiff = objRot * Quaternion.Invert(mloWorldRotation);
+
+            rotationDiff.Normalize();
+
             entity.Rotation = new Vector4(rotationDiff.X, rotationDiff.Y, rotationDiff.Z, rotationDiff.W);
         }
 
-        public static Vector3 Mlo2World(Vector3 position, MCMloArchetypeDef mlo, Vector3 mloWorldPosition, Quaternion mloWorldRotation)
+        public static Tuple<Vector3, Vector4> Mlo2World(Vector3 position, Vector4 rotation, Vector3 mloWorldPosition, Quaternion mloWorldRotation)
         {
-            var newPosition = new Vector3(position.X, position.Y, position.Z);
+            var objRot = new Quaternion(rotation.X, rotation.Y, rotation.Z, rotation.W);
 
-            newPosition -= Utils.RotateTransform(mloWorldRotation, position, Vector3.Zero);
-            newPosition += mloWorldPosition;
+            var newPos = Utils.RotateTransform(mloWorldRotation, position, Vector3.Zero);
+            newPos += mloWorldPosition;
 
-            return newPosition;
+            var rotationDiff = objRot * Quaternion.Invert(mloWorldRotation);
+
+            rotationDiff.Normalize();
+
+            var newRot = new Vector4(rotationDiff.X, rotationDiff.Y, rotationDiff.Z, rotationDiff.W);
+
+            return new Tuple<Vector3, Vector4>(newPos, newRot);
         }
 
         public static Vector3[][] CalcExtents(List<MCEntityDef> entities)
@@ -337,66 +367,6 @@ namespace GTAUtil
                 new Vector3[2] { smin, smax },
             };
         }
-
-    }
-
-    public static class QuaternionExtension
-    {
-        public static Vector3 Multiply(this Quaternion a, Vector3 b)
-        {
-            float axx = a.X * 2.0f;
-            float ayy = a.Y * 2.0f;
-            float azz = a.Z * 2.0f;
-            float awxx = a.W * axx;
-            float awyy = a.W * ayy;
-            float awzz = a.W * azz;
-            float axxx = a.X * axx;
-            float axyy = a.X * ayy;
-            float axzz = a.X * azz;
-            float ayyy = a.Y * ayy;
-            float ayzz = a.Y * azz;
-            float azzz = a.Z * azz;
-            return new Vector3(((b.X * ((1.0f - ayyy) - azzz)) + (b.Y * (axyy - awzz))) + (b.Z * (axzz + awyy)),
-                        ((b.X * (axyy + awzz)) + (b.Y * ((1.0f - axxx) - azzz))) + (b.Z * (ayzz - awxx)),
-                        ((b.X * (axzz - awyy)) + (b.Y * (ayzz + awxx))) + (b.Z * ((1.0f - axxx) - ayyy)));
-        }
-
-        public static Matrix ToMatrix(this Quaternion q)
-        {
-            float xx = q.X * q.X;
-            float yy = q.Y * q.Y;
-            float zz = q.Z * q.Z;
-            float xy = q.X * q.Y;
-            float zw = q.Z * q.W;
-            float zx = q.Z * q.X;
-            float yw = q.Y * q.W;
-            float yz = q.Y * q.Z;
-            float xw = q.X * q.W;
-            Matrix result = new Matrix();
-            result.M11 = 1.0f - (2.0f * (yy + zz));
-            result.M12 = 2.0f * (xy + zw);
-            result.M13 = 2.0f * (zx - yw);
-            result.M14 = 0.0f;
-            result.M21 = 2.0f * (xy - zw);
-            result.M22 = 1.0f - (2.0f * (zz + xx));
-            result.M23 = 2.0f * (yz + xw);
-            result.M24 = 0.0f;
-            result.M31 = 2.0f * (zx + yw);
-            result.M32 = 2.0f * (yz - xw);
-            result.M33 = 1.0f - (2.0f * (yy + xx));
-            result.M34 = 0.0f;
-            result.M41 = 0.0f;
-            result.M42 = 0.0f;
-            result.M43 = 0.0f;
-            result.M44 = 1.0f;
-            return result;
-        }
-
-        public static Vector4 ToVector4(this Quaternion q)
-        {
-            return new Vector4(q.X, q.Y, q.Z, q.W);
-        }
-
     }
 
 }

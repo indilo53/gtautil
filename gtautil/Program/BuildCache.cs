@@ -29,7 +29,7 @@ namespace GTAUtil
                 var names = FileUtilities.GetAllFileNamesWithoutExtension(Settings.Default.GTAFolder);
 
                 foreach(var name in names)
-                    Jenkins.Ensure(name.ToLowerInvariant());
+                    Utils.Hash(name.ToLowerInvariant());
 
                 ArchiveUtilities.ForEachFile(Settings.Default.GTAFolder, (fullFileName, file, encryption) =>
                 {

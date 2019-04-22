@@ -12,6 +12,7 @@ using RageLib.Resources.GTA5.PC.GameFiles;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,8 +25,11 @@ namespace GTAUtil
     {
         static dynamic Cache = null;
         static string[] DLCList;
-        static Dictionary<string, Dictionary<uint, RpfFileEntry>> Files = new Dictionary<string, Dictionary<uint, RpfFileEntry>>();
+        static List<RpfFileEntry> Files = new List<RpfFileEntry>(); // All files
+        static Dictionary<string, RpfFileEntry> DLCFiles = new Dictionary<string, RpfFileEntry>();  // Latest dlc version of each file
+        static Dictionary<string, Dictionary<uint, RpfFileEntry>> FileHashes = new Dictionary<string, Dictionary<uint, RpfFileEntry>>();    // Files by extension then hash
         static Dictionary<uint, Drawable> DrawableCache = new Dictionary<uint, Drawable>();
+        static Dictionary<string, YmtPedDefinitionFile> PedYmtCache = new Dictionary<string, YmtPedDefinitionFile>();
         static Dictionary<uint, MCBaseArchetypeDef> ArchetypeCache = new Dictionary<uint, MCBaseArchetypeDef>();
 
         static string AssemblyDirectory
@@ -42,6 +46,7 @@ namespace GTAUtil
         static void Main(string[] args)
         {
             HandleTestOptions(args);
+            HandleFixArchiveOptions(args);
             HandleBuildCacheOptions(args);
             HandleCompileGxt2Options(args);
             HandleExportMetaOptions(args);
@@ -53,6 +58,8 @@ namespace GTAUtil
             HandleImportMetaOptions(args);
             HandleInjectEntitiesOptions(args);
             HandleMergeYmapOptionsOptions(args);
+            HandleMoveYmapOptionsOptions(args);
+            HandleWorldToMLOOptions(args);
 
             if (args.Length == 0 || args[0] == "help")
             {
@@ -96,6 +103,8 @@ namespace GTAUtil
             GTA5Constants.PC_AES_KEY = Resource.gtav_aes_key;
             GTA5Constants.PC_NG_KEYS = CryptoIO.ReadNgKeys(Resource.gtav_ng_key);
             GTA5Constants.PC_NG_DECRYPT_TABLES = CryptoIO.ReadNgTables(Resource.gtav_ng_decrypt_tables);
+            GTA5Constants.PC_NG_ENCRYPT_TABLES = CryptoIO.ReadNgTables(Resource.gtav_ng_encrypt_tables);
+            GTA5Constants.PC_NG_ENCRYPT_LUTs = CryptoIO.ReadNgLuts(Resource.gtav_ng_encrypt_luts);
             GTA5Constants.PC_LUT = Resource.gtav_hash_lut;
         }
 
@@ -111,7 +120,7 @@ namespace GTAUtil
 
                     while((line = reader.ReadLine()) != null)
                     {
-                        Jenkins.Ensure(line);
+                        Utils.Hash(line);
                     }
                 }
             }
@@ -139,22 +148,38 @@ namespace GTAUtil
                 string ext = split[split.Length - 1];
                 uint hash = Jenkins.Hash(name);
 
-                Dictionary<uint, RpfFileEntry> dict;
-
-                if (!(Files.TryGetValue(ext, out dict)))
-                {
-                    dict = new Dictionary<uint, RpfFileEntry>();
-                }
-
-                dict[hash] = new RpfFileEntry()
+                var rpfEntry = new RpfFileEntry()
                 {
                     Hash = hash,
+                    Name = fullFileName.Replace('/', '\\').ToLowerInvariant().Split('\\').Last(),
                     FullFileName = fullFileName,
                     DlcLevel = dlcLevel,
                     Ext = ext,
                 };
 
-                Files[ext] = dict;
+                if(DLCFiles.ContainsKey(rpfEntry.Name))
+                {
+
+                    if (rpfEntry.DlcLevel > DLCFiles[rpfEntry.Name].DlcLevel)
+                        DLCFiles[rpfEntry.Name] = rpfEntry;
+                }
+                else
+                {
+                    DLCFiles[rpfEntry.Name] = rpfEntry;
+                }
+
+                Files.Add(rpfEntry);
+
+                Dictionary<uint, RpfFileEntry> dict;
+
+                if (!(FileHashes.TryGetValue(ext, out dict)))
+                {
+                    dict = new Dictionary<uint, RpfFileEntry>();
+                }
+
+                dict[hash] = rpfEntry;
+
+                FileHashes[ext] = dict;
 
             });
         }
@@ -293,29 +318,18 @@ namespace GTAUtil
 
         public static int GetDLCLevel(string path)  // path must be a sub dir/file of the dlc
         {
-            path = path.ToLowerInvariant();
+            path = path.ToLowerInvariant().Replace('/', '\\');
 
-            string[] split = path.Replace('/', '\\').Split('\\');
+            string[] split = path.Split('\\');
 
             if(split.Length == 1)
             {
-                string name = Path.GetFileNameWithoutExtension(path);
-                string ext = Path.GetExtension(path);
-
-                if (ext.Length > 0)
-                    ext = ext.Substring(1);
-
-                uint hash = Jenkins.Hash(name.ToLowerInvariant());
-
-                if(Files.ContainsKey(ext) && Files[ext].ContainsKey(hash))
-                {
-                    Files[ext].TryGetValue(hash, out RpfFileEntry rpfFileEntry);
-                    return rpfFileEntry.DlcLevel;
-                }
-                else
+                if(!DLCFiles.TryGetValue(path, out RpfFileEntry entry))
                 {
                     return 0;
                 }
+
+                return entry.DlcLevel;
             }
             else
             {
@@ -341,9 +355,9 @@ namespace GTAUtil
 
             if(!DrawableCache.ContainsKey(hash))
             {
-                if(Files.ContainsKey("ydr") && Files["ydr"].ContainsKey(hash))
+                if(FileHashes.ContainsKey("ydr") && FileHashes["ydr"].ContainsKey(hash))
                 {
-                    Files["ydr"].TryGetValue(hash, out RpfFileEntry rpfFileEntry);
+                    FileHashes["ydr"].TryGetValue(hash, out RpfFileEntry rpfFileEntry);
 
                     Utils.ForFile(rpfFileEntry.FullFileName, (file, encryption) =>
                     {
@@ -372,6 +386,7 @@ namespace GTAUtil
     {
         public uint Hash;
         public string FullFileName;
+        public string Name;
         public int DlcLevel;
         public string Ext;
 

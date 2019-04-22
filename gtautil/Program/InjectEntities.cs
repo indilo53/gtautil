@@ -7,6 +7,7 @@ using RageLib.Resources.GTA5.PC.GameFiles;
 using RageLib.Resources.GTA5.PC.Meta;
 using RageLib.Resources.GTA5.PC.Bounds;
 using System.IO;
+using RageLib.Hash;
 
 namespace GTAUtil
 {
@@ -62,8 +63,22 @@ namespace GTAUtil
 
                 for (int i = 0; i < ytyp.CMapTypes.MloArchetypes.Count; i++)
                 {
-                    mlo = ytyp.CMapTypes.MloArchetypes[i];
-                    break;
+                    if (opts.MloName == null)
+                    {
+                        mlo = ytyp.CMapTypes.MloArchetypes[i];
+                        break;
+                    }
+                    else
+                    {
+                        uint mloNameHash = Jenkins.Hash(opts.MloName.ToLowerInvariant());
+
+                        if (mloNameHash == ytyp.CMapTypes.MloArchetypes[i].Name)
+                        {
+                            Console.Error.WriteLine("Found MLO => " + opts.MloName);
+                            mlo = ytyp.CMapTypes.MloArchetypes[i];
+                            break;
+                        }
+                    }
                 }
 
                 if (mlo == null)
@@ -115,7 +130,7 @@ namespace GTAUtil
                     var ymap = ymaps[i];
                     var name = ymapNames[i];
 
-                    if (name.StartsWith("portal_"))
+                    if (name.StartsWith("portal_") || name.StartsWith("entityset_"))
                         continue;
 
                     var roomIdx = mlo.Rooms.FindIndex(e => e.Name == name);
@@ -226,6 +241,110 @@ namespace GTAUtil
                                 for (int k = mlo.Rooms[j].AttachedObjects.Count - 1; k >= 0; k--)
                                     if (mlo.Rooms[j].AttachedObjects[k] == (uint)i)
                                         mlo.Rooms[j].AttachedObjects.RemoveAt(k);
+                        }
+                    }
+                }
+
+                var foundEntities = new Dictionary<uint, List<MCEntityDef>>();
+
+                for (int i = 0; i < ymaps.Count; i++)
+                {
+                    var ymap = ymaps[i];
+                    var name = ymapNames[i];
+
+                    if (!name.StartsWith("entityset_"))
+                        continue;
+
+                    string[] split = name.Split('_');
+                    uint nameHash = uint.Parse(split[1]);
+                    string roomName = split[2];
+
+                    if(!foundEntities.TryGetValue(nameHash, out List<MCEntityDef> fEntities))
+                    {
+                        fEntities = new List<MCEntityDef>();
+                    }
+
+                    int entitySetIdx = mlo.EntitySets.FindIndex(e => e.Name == nameHash);
+                    int roomIdx      = mlo.Rooms.FindIndex(e => e.Name == roomName);
+
+                    MCMloEntitySet currEntitySet = null;
+
+                    if (entitySetIdx != -1)
+                        currEntitySet = mlo.EntitySets[entitySetIdx];
+
+                    for (int j = 0; j < ymap.CMapData.Entities.Count; j++)
+                    {
+                        var entity = ymap.CMapData.Entities[j];
+                        var idx = currEntitySet.Entities.FindIndex(e => e.Guid == entity.Guid);
+                        var entitySet = currEntitySet;
+                        var originalPosition = entity.Position;
+                        var originalRotation = entity.Rotation;
+
+                        Console.WriteLine(name + " => " + j + " (" + idx + "|" + currEntitySet.Entities.Count + ") => " + Utils.HashString((MetaName)entity.ArchetypeName));
+
+                        Utils.World2Mlo(entity, mlo, position, rotation);
+
+                        if (opts.Static && idx == -1)
+                        {
+                            if ((entity.Flags & 32) == 0)
+                            {
+                                Console.WriteLine("  Setting static flag (32)");
+                                entity.Flags = entity.Flags | 32;
+                            }
+                        }
+
+                        entity.LodLevel = Unk_1264241711.LODTYPES_DEPTH_ORPHANHD;
+
+                        if (entity.Guid == 0)
+                        {
+                            var random = new Random();
+
+                            do
+                            {
+                                entity.Guid = (uint)random.Next(1000000, Int32.MaxValue);
+                            }
+                            while (currEntitySet.Entities.Count(e => e.Guid == entity.Guid) > 0);
+
+                            Console.WriteLine("  Setting random GUID => " + entity.Guid);
+                        }
+
+                        if (idx == -1)
+                        {
+                            idx = currEntitySet.AddEntity(entity, roomIdx);
+                        }
+                        else
+                        {
+                            Console.WriteLine("  Found matching GUID => Overriding " + idx);
+                            currEntitySet.Entities[idx] = entity;
+                        }
+
+
+                        Console.WriteLine(j + " " + Utils.HashString((MetaName)entity.ArchetypeName));
+
+                        fEntities.Add(entity);
+                    }
+
+                    foundEntities[nameHash] = fEntities;
+                }
+
+                if (opts.DeleteMissing)
+                {
+                    foreach(var entry in foundEntities)
+                    {
+                        var entitySet = mlo.EntitySets.Find(e => e.Name == entry.Key);
+
+                        for (int i = entitySet.Entities.Count - 1; i >= 0; i--)
+                        {
+                            bool found = false;
+
+                            if (entry.Value.FindIndex(e => e.Guid == entitySet.Entities[i].Guid) != -1)
+                                found = true;
+
+                            if (!found)
+                            {
+                                Console.WriteLine("DELETE " + i);
+                                entitySet.RemoveEntity(entitySet.Entities[i]);
+                            }
                         }
                     }
                 }

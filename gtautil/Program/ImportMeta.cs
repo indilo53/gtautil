@@ -12,7 +12,9 @@ namespace GTAUtil
         {
             CommandLine.Parse<ImportMetaOptions>(args, (opts, gOpts) =>
             {
-                Init(args);
+                EnsurePath();
+                EnsureKeys();
+                EnsureCache();
 
                 if (opts.InputFiles != null)
                 {

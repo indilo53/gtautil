@@ -12,6 +12,26 @@ namespace GTAUtil
         public List<string> Mods { get; set; }
     }
 
+    [Verb("fixarchive")]
+    public class FixArchiveOptions
+    {
+        [Option('i', "input")]
+        public List<string> InputFiles { get; set; }
+    }
+
+    [Verb("worldtomlo")]
+    public class WorldToMLOOptions
+    {
+        [Option('p', "mloposition")]
+        public List<float> MLOPosition { get; set; }
+
+        [Option('r', "mlorotation")]
+        public List<float> MLORotation { get; set; }
+
+        [Option('n', "position")]
+        public List<float> Position { get; set; }
+    }
+
     [Verb("genpropdefs")]
     public class GenPropDefsOptions
     {
@@ -63,6 +83,8 @@ namespace GTAUtil
         [Option('s', "static", Default = false)]
         public bool Static { get; set; }
 
+        [Option('m', "mloname")]
+        public string MloName { get; set; }
     }
 
     [Verb("extractentities")]
@@ -79,6 +101,9 @@ namespace GTAUtil
 
         [Option('r', "rotation")]
         public List<float> Rotation { get; set; }
+
+        [Option('m', "mloname")]
+        public string MloName { get; set; }
     }
 
     [Verb("genpeddefinitions")]
@@ -98,6 +123,9 @@ namespace GTAUtil
 
         [Option('r', "reserve", Default = 0)]
         public int ReserveEntries { get; set; }
+
+        [Option('s', "reserveprops", Default = 0)]
+        public int ReservePropEntries { get; set; }
 
         [Option('d', "dlclevel", Default = "")]
         public string DLCLevel { get; set; }
@@ -127,6 +155,25 @@ namespace GTAUtil
 
         [Option('y', "ymap")]
         public string Ymap { get; set; }
+    }
+
+    [Verb("moveymap")]
+    public class MoveYmapOptions
+    {
+        [Option('o', "output")]
+        public string OutputDirectory { get; set; }
+
+        [Option('n', "name")]
+        public string Name { get; set; }
+
+        [Option('y', "ymap")]
+        public string Ymap { get; set; }
+
+        [Option('p', "position")]
+        public List<float> Position { get; set; }
+
+        [Option('r', "rotation")]
+        public List<float> Rotation { get; set; }
     }
 
     [Verb("test")]
