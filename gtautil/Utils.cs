@@ -197,7 +197,7 @@ namespace GTAUtil
             }
             catch (Exception e)
             {
-
+                Console.Error.WriteLine(e.Message);
             }
         }
 

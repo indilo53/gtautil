@@ -38,7 +38,7 @@ namespace GTAUtil
 
                 if (opts.Name == null)
                 {
-                    Console.WriteLine("Plase provide new generated ymap name with --name");
+                    Console.WriteLine("Plase output directory name with --name");
                     return;
                 }
 

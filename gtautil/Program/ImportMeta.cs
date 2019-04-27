@@ -16,7 +16,12 @@ namespace GTAUtil
                 EnsureKeys();
                 EnsureCache();
 
-                if (opts.InputFiles != null)
+                if (opts.InputFiles == null)
+                {
+                    Console.WriteLine("Please provide input files with -i --input");
+                    return;
+                }
+                else
                 {
                     var inputFiles = Utils.Expand(opts.InputFiles);
 

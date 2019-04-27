@@ -15,6 +15,21 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -42,6 +57,8 @@
     <Compile Include="Commandline\Arguments.cs" />
     <Compile Include="Commandline\Commandline.cs" />
     <Compile Include="Commandline\Options.cs" />
+    <Compile Include="Program\ExtractArchive.cs" />
+    <Compile Include="Program\CreateArchive.cs" />
     <Compile Include="Program\FixArchive.cs" />
     <Compile Include="Program\World2MLO.cs" />
     <Compile Include="Program\MoveYmap.cs" />
@@ -50,7 +67,7 @@
     <Compile Include="Program\ExtractEntities.cs" />
     <Compile Include="Program\Generic.cs" />
     <Compile Include="Program\Test.cs" />
-    <Compile Include="Program\GenPedDefinitions.cs" />
+    <Compile Include="Program\GenPedDefs.cs" />
     <Compile Include="Program\Find.cs" />
     <Compile Include="Program\BuildCache.cs" />
     <Compile Include="Program\CompileGxt2.cs" />
@@ -123,6 +140,18 @@
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 et x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

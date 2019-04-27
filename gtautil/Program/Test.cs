@@ -18,7 +18,9 @@ namespace GTAUtil
         {
             CommandLine.Parse<TestOptions>(args, (opts, gOpts) =>
             {
-                Init(args);
+                // Init(args);
+
+                Console.WriteLine("Here you can run test code");
             });
         }
     }

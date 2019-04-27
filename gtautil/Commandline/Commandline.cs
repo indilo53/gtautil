@@ -32,7 +32,17 @@ namespace GTAUtil
 
             if (gParsingTarget != null && parsingTarget != null)
             {
-                callback(parsingTarget, gParsingTarget);
+                if(args.Length > 1 && args[1] == "help")
+                {
+                    var assembly = Assembly.GetExecutingAssembly().GetName();
+
+                    Console.Error.WriteLine(assembly.Name + " " + assembly.Version + "\n");
+                    Console.Error.WriteLine(GenHelp<T>());
+                }
+                else
+                {
+                    callback(parsingTarget, gParsingTarget);
+                }
             }
 
         }
@@ -190,6 +200,7 @@ namespace GTAUtil
             var sb = new StringBuilder();
 
             sb.AppendLine(assembly.Name + " " + assembly.Version + "\n");
+            sb.Append(GenHelp<GenericOptions>());
 
             int longerVerbLength = 0;
 
@@ -213,13 +224,15 @@ namespace GTAUtil
                 sb.AppendLine("  " + verb.Name + new string(' ', 4 + lengthDiff) + verb.HelpText);
             }
 
+            sb.AppendLine();
+
             return sb.ToString();
         }
 
         /// <summary>
         /// Specific help - Show what args are declared in parsing target T
         /// </summary>
-        private static string GenHelp<T>() where T : class
+        public static string GenHelp<T>() where T : class
         {
             var optionAttrs = GetOptionAttributes<T>();
             var assembly = Assembly.GetExecutingAssembly().GetName();
@@ -253,8 +266,6 @@ namespace GTAUtil
 
                 sb.Clear();
             }
-
-            sb.AppendLine(assembly.Name + " " + assembly.Version + "\n");
 
             for (int i = 0; i < attrInfos.Count; i++)
             {

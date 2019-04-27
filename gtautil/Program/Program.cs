@@ -46,13 +46,15 @@ namespace GTAUtil
         static void Main(string[] args)
         {
             HandleTestOptions(args);
+            HandleCreateArchiveOptions(args);
+            HandleExtractArchiveOptions(args);
             HandleFixArchiveOptions(args);
             HandleBuildCacheOptions(args);
             HandleCompileGxt2Options(args);
             HandleExportMetaOptions(args);
             HandleExtractEntitiesOptions(args);
             HandleFindOptions(args);
-            HandleGenPedDefinitionsOptions(args);
+            HandleGenPedDefsOptions(args);
             HandleGenPropDefsOptions(args);
             HandleGetDLCListOptions(args);
             HandleImportMetaOptions(args);
@@ -255,6 +257,8 @@ namespace GTAUtil
                 }
 
             });
+
+            inputArchive.Dispose();
 
 
             ArchiveUtilities.ForEachFile(Settings.Default.GTAFolder, (string fullFileName, IArchiveFile file, RageArchiveEncryption7 encryption) =>

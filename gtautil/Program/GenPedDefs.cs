@@ -17,9 +17,9 @@ namespace GTAUtil
 {
     partial class Program
     {
-        static void HandleGenPedDefinitionsOptions(string[] args)
+        static void HandleGenPedDefsOptions(string[] args)
         {
-            CommandLine.Parse<GenPedDefinitionsOptions>(args, (opts, gOpts) =>
+            CommandLine.Parse<GenPedDefsOptions>(args, (opts, gOpts) =>
             {
                 var ymtRegex = new Regex("mp_(m|f)_freemode_01.*\\.ymt$");
                 var cYddRegex = new Regex("(head|berd|hair|uppr|lowr|hand|feet|teef|accs|task|decl|jbib)_(\\d\\d\\d)_u.ydd$");
@@ -238,6 +238,74 @@ namespace GTAUtil
 
                     }
 
+                    if(opts.FiveMFormat)
+                    {
+                        Directory.CreateDirectory(opts.OutputDirectory + "\\stream");
+                        File.Create(opts.OutputDirectory + "\\__resource.lua");
+                    }
+                    else
+                    {
+                        Directory.CreateDirectory(opts.OutputDirectory + "\\x64\\models\\cdimages\\streamedpeds_mp.rpf");
+                        Directory.CreateDirectory(opts.OutputDirectory + "\\x64\\models\\cdimages\\streamedpedprops.rpf");
+
+                        string contentXml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<CDataFileMgr__ContentsOfDataFileXml>
+    <disabledFiles />
+    <includedXmlFiles />
+    <includedDataFiles />
+    <dataFiles>
+        <Item>
+            <filename>dlc_gtauclothes:/%PLATFORM%/models/cdimages/streamedpeds_mp.rpf</filename>
+            <fileType>RPF_FILE</fileType>
+            <overlay value=""true"" />
+            <disabled value=""true"" />
+            <persistent value=""true"" />
+        </Item>
+        <Item>
+            <filename>dlc_gtauclothes:/%PLATFORM%/models/cdimages/streamedpedprops.rpf</filename>
+            <fileType>RPF_FILE</fileType>
+            <overlay value=""true"" />
+            <disabled value=""true"" />
+            <persistent value=""true"" />
+        </Item>
+    </dataFiles>
+    <contentChangeSets>
+        <Item>
+            <changeSetName>gtauclothes_AUTOGEN</changeSetName>
+            <filesToDisable />
+            <filesToEnable>
+                <Item>dlc_gtauclothes:/%PLATFORM%/models/cdimages/streamedpeds_mp.rpf</Item>
+                <Item>dlc_gtauclothes:/%PLATFORM%/models/cdimages/streamedpedprops.rpf</Item>
+            </filesToEnable>
+            <txdToLoad />
+            <txdToUnload />
+            <residentResources />
+            <unregisterResources />
+        </Item>
+    </contentChangeSets>
+    <patchFiles />
+</CDataFileMgr__ContentsOfDataFileXml>";
+
+                        string setup2Xml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<SSetupData>
+    <deviceName>dlc_gtauclothes</deviceName>
+    <datFile>content.xml</datFile>
+    <timeStamp>03/30/2018 17:26:39</timeStamp>
+    <nameHash>gtauclothes</nameHash>
+    <contentChangeSetGroups>
+        <Item>
+            <NameHash>GROUP_STARTUP</NameHash>
+            <ContentChangeSets>
+                <Item>gtauclothes_AUTOGEN</Item>
+            </ContentChangeSets>
+        </Item>
+    </contentChangeSetGroups>
+</SSetupData>";
+
+                        File.WriteAllText(opts.OutputDirectory + "\\content.xml", contentXml);
+                        File.WriteAllText(opts.OutputDirectory + "\\setup2.xml", setup2Xml);
+                    }
+
                     foreach (var ymtEntry in ymts)
                     {
 
@@ -439,8 +507,8 @@ namespace GTAUtil
                             if (component == Unk_884254308.PV_COMP_INVALID || component == Unk_884254308.PV_COMP_MAX)
                                 continue;
 
-                            int count = ymt.Unk_376833625.Components[component]?.Unk_1756136273.Count ?? 0;
-                            int max = (opts.ReserveEntries > count) ? opts.ReserveEntries : count;
+                            int count = cCount[component];
+                            int max = (opts.ReservePropEntries > count) ? opts.ReservePropEntries : count;
                             var def = ymt.Unk_376833625.Components[component] ?? new MUnk_3538495220();
 
                             for (int i = count; i < max; i++)
@@ -471,7 +539,7 @@ namespace GTAUtil
                             if (anchor == Unk_2834549053.NUM_ANCHORS)
                                 continue;
 
-                            int count = ymt.Unk_376833625.PropInfo.Props[anchor]?.Count ?? 0;
+                            int count = pCount[anchor];
                             int max = (opts.ReservePropEntries > count) ? opts.ReservePropEntries : count;
                             var defs = ymt.Unk_376833625.PropInfo.Props[anchor] ?? new List<MUnk_94549140>();
 
@@ -513,48 +581,46 @@ namespace GTAUtil
 
                         if (opts.FiveMFormat)
                         {
-                            Directory.CreateDirectory(opts.OutputDirectory + "\\stream");
-
                             ymt.Save(opts.OutputDirectory + "\\stream\\" + targetName + ".ymt");
 
                             // var xml2 = MetaXml.GetXml(ymt.ResourceFile.ResourceData);
                             // File.WriteAllText(opts.OutputDirectory + "\\stream\\" + targetMetaYmtFileName + ".xml", xml2);
-
-                            dynamic overrideInfos = new JObject();
-
-                            overrideInfos["components"] = new JObject();
-                            overrideInfos["props"] = new JObject();
-
-                            foreach (Unk_884254308 component in cValues)
-                            {
-                                if (component == Unk_884254308.PV_COMP_INVALID || component == Unk_884254308.PV_COMP_MAX)
-                                    continue;
-
-                                int count = ymt.Unk_376833625.Components[component]?.Unk_1756136273.Count ?? 0;
-                                int max = (opts.ReserveEntries > count) ? opts.ReserveEntries : count;
-
-                                overrideInfos["components"][ComponentFilePrefix[component]] = new JObject() { ["start"] = cCount[component], ["end"] = max };
-                            }
-
-                            foreach (Unk_2834549053 anchor in pValues)
-                            {
-                                if (anchor == Unk_2834549053.NUM_ANCHORS)
-                                    continue;
-
-                                int count = ymt.Unk_376833625.PropInfo.Props[anchor]?.Count ?? 0;
-                                int max = (opts.ReservePropEntries > count) ? opts.ReservePropEntries : count;
-
-                                overrideInfos["props"][AnchorFilePrefix[anchor]] = new JObject() { ["start"] = pCount[anchor], ["end"] = max };
-                            }
-
-                            var jsonString = JsonConvert.SerializeObject(overrideInfos, new JsonSerializerSettings() { Formatting = Newtonsoft.Json.Formatting.Indented });
-
-                            File.WriteAllText(opts.OutputDirectory + "\\" + targetName + ".override.json", jsonString);
                         }
                         else
                         {
-
+                            ymt.Save(opts.OutputDirectory + "\\x64\\models\\cdimages\\streamedpeds_mp.rpf\\" + targetName + ".ymt");
                         }
+
+                        dynamic overrideInfos = new JObject();
+
+                        overrideInfos["components"] = new JObject();
+                        overrideInfos["props"] = new JObject();
+
+                        foreach (Unk_884254308 component in cValues)
+                        {
+                            if (component == Unk_884254308.PV_COMP_INVALID || component == Unk_884254308.PV_COMP_MAX)
+                                continue;
+
+                            int count = ymt.Unk_376833625.Components[component]?.Unk_1756136273.Count ?? 0;
+                            int max = (opts.ReserveEntries > count) ? opts.ReserveEntries : count;
+
+                            overrideInfos["components"][ComponentFilePrefix[component]] = new JObject() { ["start"] = cCount[component], ["end"] = max };
+                        }
+
+                        foreach (Unk_2834549053 anchor in pValues)
+                        {
+                            if (anchor == Unk_2834549053.NUM_ANCHORS)
+                                continue;
+
+                            int count = ymt.Unk_376833625.PropInfo.Props[anchor]?.Count ?? 0;
+                            int max = (opts.ReservePropEntries > count) ? opts.ReservePropEntries : count;
+
+                            overrideInfos["props"][AnchorFilePrefix[anchor]] = new JObject() { ["start"] = pCount[anchor], ["end"] = max };
+                        }
+
+                        var jsonString = JsonConvert.SerializeObject(overrideInfos, new JsonSerializerSettings() { Formatting = Newtonsoft.Json.Formatting.Indented });
+
+                        File.WriteAllText(opts.OutputDirectory + "\\" + targetName + ".override.json", jsonString);
                     }
 
                     // Check which directories contains addon component / props
@@ -612,14 +678,18 @@ namespace GTAUtil
                         {
                             foreach (var entry in processedYmtData.Item1)
                             {
-                                if(opts.FiveMFormat)
-                                    GenPedDefinitions_CreateComponentFiles_FiveM(opts, ymtDirName, entry, processedYmtData.Item2[entry.Key]);
+                                if (opts.FiveMFormat)
+                                    GenPedDefs_CreateComponentFiles_FiveM(opts, ymtDirName, entry, processedYmtData.Item2[entry.Key]);
+                                else
+                                    GenPedDefs_CreateComponentFiles(opts, ymtDirName, entry, processedYmtData.Item2[entry.Key]);
                             }
 
                             foreach (var entry in processedYmtData.Item3)
                             {
-                                if(opts.FiveMFormat)
-                                    GenPedDefinitions_CreatePropFiles_FiveM(opts, ymtDirName, entry, processedYmtData.Item4[entry.Key]);
+                                if (opts.FiveMFormat)
+                                    GenPedDefs_CreatePropFiles_FiveM(opts, ymtDirName, entry, processedYmtData.Item4[entry.Key]);
+                                else
+                                    GenPedDefs_CreatePropFiles(opts, ymtDirName, entry, processedYmtData.Item4[entry.Key]);
                             }
                         }
 
@@ -630,7 +700,80 @@ namespace GTAUtil
             });
         }
 
-        public static void GenPedDefinitions_CreateComponentFiles_FiveM(GenPedDefinitionsOptions opts, string targetFileName, KeyValuePair<string, Tuple<string, int, int, int, string, string>> entry, int textureCount)
+        public static void GenPedDefs_CreateComponentFiles(GenPedDefsOptions opts, string targetDirName, KeyValuePair<string, Tuple<string, int, int, int, string, string>> entry, int textureCount)
+        {
+            string sourceYddFile = entry.Key;
+            string prefix = entry.Value.Item1;
+            int origPos = entry.Value.Item2;
+            int pos = entry.Value.Item3;
+            int count = entry.Value.Item4;
+            string folder = entry.Value.Item5;
+            string yddFileName = entry.Value.Item6;
+            string directory = opts.OutputDirectory + "\\x64\\models\\cdimages\\streamedpeds_mp.rpf\\" + targetDirName;
+
+            Directory.CreateDirectory(directory);
+
+            string targetYddFile = directory + "\\" + yddFileName;
+
+            File.Copy(sourceYddFile, targetYddFile, true);
+
+            int texCount = 0;
+
+            for (int k = pos; k < textureCount + pos; k++)
+            {
+                char c = 'a';
+
+                for (int l = 0; l < texCount; l++)
+                    c++;
+
+                string sourceYtdPath = folder + "\\" + origPos + "\\" + texCount + ".ytd";
+                string targetYtdFile = prefix + "_diff_" + pos.ToString().PadLeft(3, '0') + "_" + c + "_uni.ytd";
+                string targetYtdPath = directory + "\\" + targetYtdFile;
+
+                File.Copy(sourceYtdPath, targetYtdPath, true);
+
+                texCount++;
+
+            }
+        }
+
+        public static void GenPedDefs_CreatePropFiles(GenPedDefsOptions opts, string targetDirName, KeyValuePair<string, Tuple<string, int, int, int, string, string>> entry, int textureCount)
+        {
+            string sourceYddFile = entry.Key;
+            string prefix = entry.Value.Item1;
+            int origPos = entry.Value.Item2;
+            int pos = entry.Value.Item3;
+            int count = entry.Value.Item4;
+            string folder = entry.Value.Item5;
+            string yddFileName = entry.Value.Item6;
+            string directory = opts.OutputDirectory + "\\x64\\models\\cdimages\\streamedpedprops.rpf\\" + targetDirName;
+
+            string targetYddFile = directory + "_p^" + yddFileName;
+
+            File.Copy(sourceYddFile, targetYddFile, true);
+
+            int texCount = 0;
+
+            for (int k = pos; k < textureCount + pos; k++)
+            {
+                char c = 'a';
+
+                for (int l = 0; l < texCount; l++)
+                    c++;
+
+                string sourceYtdPath = folder + "\\" + origPos + "\\" + texCount + ".ytd";
+                string targetYtdFile = "p_" + prefix + "_diff_" + pos.ToString().PadLeft(3, '0') + "_" + c + ".ytd";
+                string targetYtdPath = directory + "\\" + targetYtdFile;
+
+                File.Copy(sourceYtdPath, targetYtdPath, true);
+
+                texCount++;
+
+            }
+        }
+
+
+        public static void GenPedDefs_CreateComponentFiles_FiveM(GenPedDefsOptions opts, string targetFileName, KeyValuePair<string, Tuple<string, int, int, int, string, string>> entry, int textureCount)
         {
             string sourceYddFile = entry.Key;
             string prefix = entry.Value.Item1;
@@ -664,7 +807,7 @@ namespace GTAUtil
             }
         }
 
-        public static void GenPedDefinitions_CreatePropFiles_FiveM(GenPedDefinitionsOptions opts, string targetFileName, KeyValuePair<string, Tuple<string, int, int, int, string, string>> entry, int textureCount)
+        public static void GenPedDefs_CreatePropFiles_FiveM(GenPedDefsOptions opts, string targetFileName, KeyValuePair<string, Tuple<string, int, int, int, string, string>> entry, int textureCount)
         {
             string sourceYddFile = entry.Key;
             string prefix = entry.Value.Item1;
