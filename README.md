@@ -1,6 +1,6 @@
 # GTAUtil
 
-If you have any question on want to share an improvement, you can join me on discord https://discord.gg/z63cmAe
+If you have any question or want to share an improvement, you can join me on discord https://discord.gg/z63cmAe
 
 You must have basic knowledge with command-line to use this tool properly
 
