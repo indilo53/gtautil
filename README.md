@@ -4,6 +4,8 @@ If you have any question or want to share an improvement, you can join me on dis
 
 You must have basic knowledge with command-line to use this tool properly
 
+It is recommended to add GTAUtil folder to your %PATH% for quick access
+
 **Extract an rpf archive**
 
 ```
