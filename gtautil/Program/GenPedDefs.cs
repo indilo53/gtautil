@@ -746,9 +746,11 @@ namespace GTAUtil
             int count = entry.Value.Item4;
             string folder = entry.Value.Item5;
             string yddFileName = entry.Value.Item6;
-            string directory = opts.OutputDirectory + "\\x64\\models\\cdimages\\streamedpedprops.rpf\\" + targetDirName;
+            string directory = opts.OutputDirectory + "\\x64\\models\\cdimages\\streamedpedprops.rpf\\" + targetDirName + "_p";
 
-            string targetYddFile = directory + "_p^" + yddFileName;
+            Directory.CreateDirectory(directory);
+
+            string targetYddFile = directory + "\\" + yddFileName;
 
             File.Copy(sourceYddFile, targetYddFile, true);
 
