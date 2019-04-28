@@ -117,10 +117,10 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="RageLib">
-      <HintPath>..\..\gta-toolkit\RageLib\bin\Debug\RageLib.dll</HintPath>
+      <HintPath>Libraries\gta-toolkit\RageLib\bin\Debug\RageLib.dll</HintPath>
     </Reference>
     <Reference Include="RageLib.GTA5">
-      <HintPath>..\..\gta-toolkit\RageLib.GTA5\bin\Debug\RageLib.GTA5.dll</HintPath>
+      <HintPath>Libraries\gta-toolkit\RageLib.GTA5\bin\Debug\RageLib.GTA5.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
