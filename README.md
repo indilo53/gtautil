@@ -72,7 +72,7 @@ gtautil genpropdefs --input 'path\to\*.ydr'
 
 
 
-**Generate ymt ped definition files for mp freemode** (addon clothing and ped props)
+**Generate ped definition files for mp freemode including ymt** (addon clothing and ped props)
 
 1) Creating the project (selecting only the base ped definition package)
 
