@@ -354,20 +354,17 @@ namespace GTAUtil
 
                             if (Directory.Exists(targetDirectory))
                             {
-                                string[] addonFiles = Directory.GetFiles(targetDirectory).Where(e => e.EndsWith(".ydd")).ToArray();
+                                string[] addonFiles = Directory.GetFiles(targetDirectory).Where(e => e.EndsWith(".ydd")).OrderBy(e => e).ToArray();
+
                                 var addons = new List<int>();
 
                                 for (int k = 0; k < addonFiles.Length; k++)
                                 {
-                                    string numStr = addonFiles[k].Substring(0, addonFiles[k].Length - 4);
-                                    int num = int.Parse(numStr.Split('\\').Last());
-                                    addons.Add(num);
+                                    addons.Add(k);
                                 }
 
                                 if (addons.Count > 0)
                                 {
-                                    addons.Sort();
-
                                     // Create addon component entries
                                     var def = ymt.Unk_376833625.Components[component] ?? new MUnk_3538495220();
 
@@ -377,22 +374,18 @@ namespace GTAUtil
                                         string textureDirectory = targetDirectory + "\\" + addons[k];
                                         var addonTextures = new List<int>();
                                         var item = new MUnk_1535046754();
-                                        string[] textures = Directory.GetFiles(textureDirectory).Where(e => e.EndsWith(".ytd")).ToArray();
+                                        string[] textures = Directory.GetFiles(textureDirectory).Where(e => e.EndsWith(".ytd")).OrderBy(e => e).ToArray();
                                         string yddFileName = prefix + "_" + addonPos.ToString().PadLeft(3, '0') + "_u.ydd";
 
-                                        cYddMapping[targetDirectory + "\\" + addons[k] + ".ydd"] = new Tuple<string, int, int, int, string, string>(prefix, addons[k], addonPos, addons.Count, targetDirectory, yddFileName);
+                                        cYddMapping[addonFiles[k]] = new Tuple<string, int, int, int, string, string>(prefix, addons[k], addonPos, addons.Count, targetDirectory, yddFileName);
 
                                         // Create addon texture entries
                                         for (int l = 0; l < textures.Length; l++)
                                         {
-                                            string numStr = textures[l].Substring(0, textures[l].Length - 4).Split('\\').Last();
-                                            int num = int.Parse(numStr);
-                                            addonTextures.Add(num);
+                                            addonTextures.Add(l);
                                         }
 
-                                        addonTextures.Sort();
-
-                                        cTextureCount[targetDirectory + "\\" + addons[k] + ".ydd"] = addonTextures.Count;
+                                        cTextureCount[addonFiles[k]] = addonTextures.Count;
 
                                         for (int l = 0; l < addonTextures.Count; l++)
                                         {
@@ -407,6 +400,11 @@ namespace GTAUtil
                                             cInfo.Unk_4196345791 = (byte)l;
 
                                             ymt.Unk_376833625.CompInfos.Add(cInfo);
+                                        }
+
+                                        if(File.Exists(addonFiles[k].Replace(".ydd", ".yld")))
+                                        {
+                                            item.ClothData.Unk_2828247905 = 1;
                                         }
 
                                         def.Unk_1756136273.Add(item);
@@ -429,20 +427,16 @@ namespace GTAUtil
 
                             if (Directory.Exists(targetDirectory))
                             {
-                                string[] addonFiles = Directory.GetFiles(targetDirectory).Where(e => e.EndsWith(".ydd")).ToArray();
+                                string[] addonFiles = Directory.GetFiles(targetDirectory).Where(e => e.EndsWith(".ydd")).OrderBy(e => e).ToArray();
                                 var addons = new List<int>();
 
                                 for (int k = 0; k < addonFiles.Length; k++)
                                 {
-                                    string numStr = addonFiles[k].Substring(0, addonFiles[k].Length - 4);
-                                    int num = int.Parse(numStr.Split('\\').Last());
-                                    addons.Add(num);
+                                    addons.Add(k);
                                 }
 
                                 if (addons.Count > 0)
                                 {
-                                    addons.Sort();
-
                                     // Create addon prop entries
                                     var defs = ymt.Unk_376833625.PropInfo.Props[anchor] ?? new List<MUnk_94549140>();
 
@@ -452,24 +446,20 @@ namespace GTAUtil
                                         string textureDirectory = targetDirectory + "\\" + addons[k];
                                         var addonTextures = new List<int>();
                                         var item = new MUnk_94549140(ymt.Unk_376833625.PropInfo);
-                                        string[] textures = Directory.GetFiles(textureDirectory).Where(e => e.EndsWith(".ytd")).ToArray();
+                                        string[] textures = Directory.GetFiles(textureDirectory).Where(e => e.EndsWith(".ytd")).OrderBy(e => e).ToArray();
                                         string yddFileName = "p_" + prefix + "_" + addonPos.ToString().PadLeft(3, '0') + ".ydd";
 
                                         item.AnchorId = (byte)anchor;
 
-                                        pYddMapping[targetDirectory + "\\" + addons[k] + ".ydd"] = new Tuple<string, int, int, int, string, string>(prefix, addons[k], addonPos, addons.Count, targetDirectory, yddFileName);
+                                        pYddMapping[addonFiles[k]] = new Tuple<string, int, int, int, string, string>(prefix, addons[k], addonPos, addons.Count, targetDirectory, yddFileName);
 
                                         // Create addon texture entries
                                         for (int l = 0; l < textures.Length; l++)
                                         {
-                                            string numStr = textures[l].Substring(0, textures[l].Length - 4).Split('\\').Last();
-                                            int num = int.Parse(numStr);
-                                            addonTextures.Add(num);
+                                            addonTextures.Add(l);
                                         }
 
-                                        addonTextures.Sort();
-
-                                        pTextureCount[targetDirectory + "\\" + addons[k] + ".ydd"] = addonTextures.Count;
+                                        pTextureCount[addonFiles[k]] = addonTextures.Count;
 
                                         for (int l = 0; l < addonTextures.Count; l++)
                                         {
@@ -703,6 +693,7 @@ namespace GTAUtil
         public static void GenPedDefs_CreateComponentFiles(GenPedDefsOptions opts, string targetDirName, KeyValuePair<string, Tuple<string, int, int, int, string, string>> entry, int textureCount)
         {
             string sourceYddFile = entry.Key;
+            string sourceYldFile = sourceYddFile.Replace(".ydd", ".yld");
             string prefix = entry.Value.Item1;
             int origPos = entry.Value.Item2;
             int pos = entry.Value.Item3;
@@ -716,6 +707,12 @@ namespace GTAUtil
             string targetYddFile = directory + "\\" + yddFileName;
 
             File.Copy(sourceYddFile, targetYddFile, true);
+
+            if(File.Exists(sourceYldFile))
+            {
+                string targetYldFile = targetYddFile.Replace(".ydd", ".yld");
+                File.Copy(sourceYldFile, targetYldFile, true);
+            }
 
             int texCount = 0;
 
@@ -778,6 +775,7 @@ namespace GTAUtil
         public static void GenPedDefs_CreateComponentFiles_FiveM(GenPedDefsOptions opts, string targetFileName, KeyValuePair<string, Tuple<string, int, int, int, string, string>> entry, int textureCount)
         {
             string sourceYddFile = entry.Key;
+            string sourceYldFile = sourceYddFile.Replace(".ydd", ".yld");
             string prefix = entry.Value.Item1;
             int origPos = entry.Value.Item2;
             int pos = entry.Value.Item3;
@@ -789,6 +787,11 @@ namespace GTAUtil
 
             File.Copy(sourceYddFile, targetYddFile, true);
 
+            if (File.Exists(sourceYldFile))
+            {
+                string targetYldFile = targetYddFile.Replace(".ydd", ".yld");
+                File.Copy(sourceYldFile, targetYldFile, true);
+            }
             int texCount = 0;
 
             for (int k = pos; k < textureCount + pos; k++)
