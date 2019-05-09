@@ -70,6 +70,11 @@ You can also specify MLO name with --mloname
 gtautil genpropdefs --input 'path\to\*.ydr'
 ```
 
+If you want to keep infos from existing ytyp:
+
+```
+gtautil genpropdefs --input 'path\to\*.ydr' --ytyp 'path/to/*.ytyp'
+```
 
 
 **Generate ped definition files for mp freemode including ymt** (addon clothing and ped props)
