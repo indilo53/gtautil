@@ -66,6 +66,9 @@ namespace GTAUtil
         
         [Option('o', "output", HelpText = "Output directory")]
         public string OutputDirectory { get; set; }
+
+        [Option('y', "ytyp", HelpText = "Ytyps containing entity informations")]
+        public List<string> Ytyp { get; set; }
     }
 
     [Verb("importmeta")]
