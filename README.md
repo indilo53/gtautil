@@ -73,7 +73,7 @@ gtautil genpropdefs --input 'path\to\*.ydr'
 If you want to keep infos from existing ytyp:
 
 ```
-gtautil genpropdefs --input 'path\to\*.ydr' --ytyp 'path/to/*.ytyp'
+gtautil genpropdefs --input 'path\to\*.ydr' --ytyp 'path\to\*.ytyp'
 ```
 
 
@@ -134,7 +134,7 @@ gtautil importmeta --input 'path\to\file.ymap.xml' --directory 'output\directory
 **Export meta to xml**
 
 ```
-gtautil exportmeta --iinput 'path\to\file.ytyp' --directory 'output\directory'
+gtautil exportmeta --input 'path\to\file.ytyp' --directory 'output\directory'
 ```
 
 
