@@ -121,7 +121,7 @@ gtautil createarchive --input build --output . --name dlc
 
 if will generate a dlc named **gtauclothes** (hardcoded for now) so you put the dlc.rpf in **dlcpacks/gtauclothes**
 
-### Generate collision from drawable
+**Generate collision from drawable**
 
 1) Generate static collision
 
