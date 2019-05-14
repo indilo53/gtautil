@@ -116,6 +116,7 @@ namespace GTAUtil
                         Materials = new ResourceSimpleArray<BoundMaterial>(),
                         MaterialColours = new ResourceSimpleArray<uint_r>(),
                         PolygonMaterialIndices = new ResourceSimpleArray<byte_r>(),
+                        Unknown_78h_Data = new ResourceSimpleArray<BoundVertex>(),
                     };
 
                     var material = new BoundMaterial();
@@ -139,6 +140,7 @@ namespace GTAUtil
                         };
 
                         bGeometry.Vertices.Add(bVertex);
+                        bGeometry.Unknown_78h_Data.Add(bVertex);
                     }
 
                     var meshTriangles = mesh.Triangles().ToList();
