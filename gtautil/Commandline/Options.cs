@@ -202,6 +202,29 @@ namespace GTAUtil
         public List<float> Rotation { get; set; }
     }
 
+    [Verb("gencol")]
+    public class GenColOptions
+    {
+        [Option('i', "input", HelpText = "Input file")]
+        public string InputFile { get; set; }
+
+        [Option('o', "output", HelpText = "Output file")]
+        public string OutputFile { get; set; }
+
+        [Option('s', "smooth", Default = 0, HelpText = "Number of passes to smooth the mesh")]
+        public int Smooth { get; set; }
+
+        [Option('t', "triangles", Default = -1, HelpText = "Max triangle count in generated collision")]
+        public int TriangleCount { get; set; }
+
+        [Option('q', "quantum", Default = 512, HelpText = "Quantum multiplier => (bbMax - bbMin) / (2 ^ multiplier)")]
+        public int Qantum { get; set; }
+
+        [Option('m', "mode", Default = "copy")]
+        public string Mode { get; set; }
+
+    }
+
     [Verb("test")]
     public class TestOptions
     {

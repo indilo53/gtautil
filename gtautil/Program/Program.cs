@@ -51,6 +51,7 @@ namespace GTAUtil
             HandleFixArchiveOptions(args);
             HandleBuildCacheOptions(args);
             HandleCompileGxt2Options(args);
+            HandleGenColOptions(args);
             HandleExportMetaOptions(args);
             HandleExtractEntitiesOptions(args);
             HandleFindOptions(args);

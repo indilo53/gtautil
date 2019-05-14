@@ -121,6 +121,36 @@ gtautil createarchive --input build --output . --name dlc
 
 if will generate a dlc named **gtauclothes** (hardcoded for now) so you put the dlc.rpf in **dlcpacks/gtauclothes**
 
+### Generate collision from drawable
+
+1) Generate static collision
+
+```
+gtautil gencol --input mfile.ydr --output mfile.ybn
+```
+
+2) Generate embedded collision
+
+```
+gtautil gencol --input mfile.ydr --output file2.ydr
+```
+
+3) Generate static collision using hull algorithm
+
+```
+gtautil gencol --input file.ydr --output file.ybn --mode hull
+```
+
+4) Various options
+
+```
+gtautil gencol --input file.ydr --output file.ybn --mode hull --smooth 10 --triangles 200
+```
+
+smooth : Number of passes to smooth out mesh
+
+triangles: Max mesh triangles count
+
 
 
 **Import xml meta**

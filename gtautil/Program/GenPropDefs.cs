@@ -16,8 +16,6 @@ namespace GTAUtil
         {
             CommandLine.Parse<GenPropDefsOptions>(args, (opts, gOpts) =>
             {
-                Init(args);
-
                 if (opts.InputFiles != null)
                 {
                     var inputFiles = Utils.Expand(opts.InputFiles);
