@@ -135,7 +135,7 @@ gtautil gencol --input mfile.ydr --output mfile.ybn
 gtautil gencol --input mfile.ydr --output file2.ydr
 ```
 
-3) Generate static collision using hull algorithm
+3) Generate static collision using convex hull algorithm
 
 ```
 gtautil gencol --input file.ydr --output file.ybn --mode hull
