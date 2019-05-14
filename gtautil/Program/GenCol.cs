@@ -63,7 +63,7 @@ namespace GTAUtil
                         {
                             var mGeometry = modelData.Geometries[g];
 
-                            for (int i = 0; i < mGeometry.Indices.Count - 3; i += 3)
+                            for (int i = 0; i < mGeometry.Indices.Count - 2; i += 3)
                             {
                                 var vert1 = mGeometry.Vertices[mGeometry.Indices[i + 0]];
                                 var vert2 = mGeometry.Vertices[mGeometry.Indices[i + 1]];
