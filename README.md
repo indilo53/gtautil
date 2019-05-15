@@ -1,5 +1,19 @@
 # GTAUtil
 
+
+
+------
+
+## Credits
+
+Neodymium146 for his work on RageLib
+
+Dexyfex for Codewalker
+
+_____
+
+
+
 If you have any question or want to share an improvement, you can join me on discord https://discord.gg/z63cmAe
 
 You must have basic knowledge with command-line to use this tool properly
