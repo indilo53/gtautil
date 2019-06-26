@@ -120,7 +120,7 @@ namespace GTAUtil
             //return null;
         }
 
-        public static byte[] GetBinaryFileData(IArchiveBinaryFile file, RageArchiveEncryption7 Encryption)
+        public static byte[] GetBinaryFileData(IArchiveBinaryFile file, RageArchiveEncryption7 encryption)
         {
             using (var ms = new MemoryStream())
             {
@@ -128,13 +128,16 @@ namespace GTAUtil
 
                 byte[] data = ms.ToArray();
 
-                if (Encryption == RageArchiveEncryption7.NG)
+                if(file.IsEncrypted)
                 {
-                    data = GTA5Crypto.DecryptNG(data, file.Name, (uint)file.UncompressedSize);
-                }
-                else if (Encryption == RageArchiveEncryption7.AES)
-                {
-                    data = GTA5Crypto.DecryptAES(data);
+                    if (encryption == RageArchiveEncryption7.AES)
+                    {
+                        data = GTA5Crypto.DecryptAES(data);
+                    }
+                    else // if(encryption == RageArchiveEncryption7.NG)
+                    {
+                        data = GTA5Crypto.DecryptNG(data, file.Name, (uint)file.UncompressedSize);
+                    }
                 }
 
                 if (file.IsCompressed)

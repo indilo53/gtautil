@@ -46,7 +46,7 @@ namespace GTAUtil
 
                     _ymap.Load(ymapInfos[i].FullName);
 
-                    ymap.CMapData.Entities.AddRange(_ymap.CMapData.Entities);
+                    ymap.CMapData.AddEntities(_ymap.CMapData.Entities);
                 }
 
                 for(int i=0; i<ymap.CMapData.Entities.Count; i++)

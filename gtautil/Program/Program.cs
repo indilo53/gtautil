@@ -50,7 +50,9 @@ namespace GTAUtil
             HandleExtractArchiveOptions(args);
             HandleFixArchiveOptions(args);
             HandleBuildCacheOptions(args);
+            HandleCompileDrawableShadersOptions(args);
             HandleCompileGxt2Options(args);
+            HandleDeamonOptions(args);
             HandleGenColOptions(args);
             HandleExportMetaOptions(args);
             HandleExtractEntitiesOptions(args);
@@ -63,6 +65,7 @@ namespace GTAUtil
             HandleMergeYmapOptionsOptions(args);
             HandleMoveYmapOptionsOptions(args);
             HandleWorldToMLOOptions(args);
+            // HandlYmapToYdrOptions(args);
 
             if (args.Length == 0 || args[0] == "help")
             {

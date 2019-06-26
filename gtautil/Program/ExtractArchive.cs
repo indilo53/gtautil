@@ -59,15 +59,23 @@ namespace GTAUtil
 
                         if (file.Name.EndsWith(".rpf"))
                         {
-                            var tmpStream = new FileStream(Path.GetTempFileName(), FileMode.Open);
+                            try
+                            {
+                                var tmpStream = new FileStream(Path.GetTempFileName(), FileMode.Open);
 
-                            file.Export(tmpStream);
-                            RageArchiveWrapper7 archive = RageArchiveWrapper7.Open(tmpStream, file.Name);
-                            queue.Add(new Tuple<string, RageArchiveWrapper7, bool>(fullFileName, archive, true));
+                                file.Export(tmpStream);
+                                RageArchiveWrapper7 archive = RageArchiveWrapper7.Open(tmpStream, file.Name);
+                                queue.Add(new Tuple<string, RageArchiveWrapper7, bool>(fullFileName, archive, true));
+                            }
+                            catch(Exception e)
+                            {
+                                Console.Error.WriteLine(e.Message);
+                            }
+
                         }
                         else
                         {
-                            if(file.Name.EndsWith(".xml"))
+                            if(file.Name.EndsWith(".xml") || file.Name.EndsWith(".meta"))
                             {
                                 byte[] data = Utils.GetBinaryFileData((IArchiveBinaryFile)file, encryption);
                                 string xml;

@@ -354,7 +354,14 @@ namespace GTAUtil
 
                             if (Directory.Exists(targetDirectory))
                             {
-                                string[] addonFiles = Directory.GetFiles(targetDirectory).Where(e => e.EndsWith(".ydd")).OrderBy(e => e).ToArray();
+                                IEnumerable<string> addonFilesUnordered = Directory.GetFiles(targetDirectory).Where(e => e.EndsWith(".ydd"));
+
+                                int padLen = 0;
+
+                                if(addonFilesUnordered.Count() > 0)
+                                    padLen = addonFilesUnordered.Max(e => e.Length);
+
+                                string[] addonFiles = addonFilesUnordered.OrderBy(e => e.PadLeft(padLen, '0')).ToArray();
 
                                 var addons = new List<int>();
 
@@ -374,7 +381,13 @@ namespace GTAUtil
                                         string textureDirectory = targetDirectory + "\\" + addons[k];
                                         var addonTextures = new List<int>();
                                         var item = new MUnk_1535046754();
-                                        string[] textures = Directory.GetFiles(textureDirectory).Where(e => e.EndsWith(".ytd")).OrderBy(e => e).ToArray();
+                                        IEnumerable<string> texturesUnordered = Directory.GetFiles(textureDirectory).Where(e => e.EndsWith(".ytd"));
+                                        int padLen1 = 0;
+
+                                        if (texturesUnordered.Count() > 0)
+                                            padLen1 = texturesUnordered.Max(e => e.Length);
+
+                                        string[] textures = texturesUnordered.OrderBy(e => e.PadLeft(padLen1, '0')).ToArray();
                                         string yddFileName = prefix + "_" + addonPos.ToString().PadLeft(3, '0') + "_u.ydd";
 
                                         cYddMapping[addonFiles[k]] = new Tuple<string, int, int, int, string, string>(prefix, addons[k], addonPos, addons.Count, targetDirectory, yddFileName);
@@ -427,7 +440,15 @@ namespace GTAUtil
 
                             if (Directory.Exists(targetDirectory))
                             {
-                                string[] addonFiles = Directory.GetFiles(targetDirectory).Where(e => e.EndsWith(".ydd")).OrderBy(e => e).ToArray();
+                                IEnumerable<string> addonFilesUnordered = Directory.GetFiles(targetDirectory).Where(e => e.EndsWith(".ydd"));
+
+                                int padLen = 0;
+
+                                if (addonFilesUnordered.Count() > 0)
+                                    padLen = addonFilesUnordered.Max(e => e.Length);
+
+                                string[] addonFiles = addonFilesUnordered.OrderBy(e => e.PadLeft(padLen, '0')).ToArray();
+
                                 var addons = new List<int>();
 
                                 for (int k = 0; k < addonFiles.Length; k++)
@@ -446,7 +467,13 @@ namespace GTAUtil
                                         string textureDirectory = targetDirectory + "\\" + addons[k];
                                         var addonTextures = new List<int>();
                                         var item = new MUnk_94549140(ymt.Unk_376833625.PropInfo);
-                                        string[] textures = Directory.GetFiles(textureDirectory).Where(e => e.EndsWith(".ytd")).OrderBy(e => e).ToArray();
+                                        IEnumerable<string> texturesUnordered = Directory.GetFiles(textureDirectory).Where(e => e.EndsWith(".ytd"));
+                                        int padLen2 = 0;
+
+                                        if (texturesUnordered.Count() > 0)
+                                            padLen2 = texturesUnordered.Max(e => e.Length);
+
+                                        string[] textures = texturesUnordered.OrderBy(e => e.PadLeft(padLen2, '0')).ToArray();
                                         string yddFileName = "p_" + prefix + "_" + addonPos.ToString().PadLeft(3, '0') + ".ydd";
 
                                         item.AnchorId = (byte)anchor;

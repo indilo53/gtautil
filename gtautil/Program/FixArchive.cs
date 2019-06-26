@@ -37,15 +37,23 @@ namespace GTAUtil
                                 {
                                     if (fullFileName.EndsWith(".rpf", StringComparison.OrdinalIgnoreCase))
                                     {
-                                        var binFile = (RageArchiveBinaryFileWrapper7)file;
-                                        var tmpStream = new FileStream(Path.GetTempFileName(), FileMode.Open);
+                                        try
+                                        {
+                                            var binFile = (RageArchiveBinaryFileWrapper7)file;
+                                            var tmpStream = new FileStream(Path.GetTempFileName(), FileMode.Open);
 
-                                        binFile.Export(tmpStream);
-                                        RageArchiveWrapper7 archive = RageArchiveWrapper7.Open(tmpStream, file.Name);
+                                            binFile.Export(tmpStream);
+                                            RageArchiveWrapper7 archive = RageArchiveWrapper7.Open(tmpStream, file.Name);
 
-                                        var wrapper = RageArchiveWrapper7.Open(tmpStream, binFile.Name);
+                                            var wrapper = RageArchiveWrapper7.Open(tmpStream, binFile.Name);
 
-                                        rpfs.Add(new Tuple<string, RageArchiveWrapper7>(fullFileName, wrapper));
+                                            rpfs.Add(new Tuple<string, RageArchiveWrapper7>(fullFileName, wrapper));
+                                        }
+                                        catch(Exception e)
+                                        {
+                                            Console.Error.WriteLine(e.Message);
+                                        }
+
                                     }
                                 });
 

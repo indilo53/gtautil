@@ -82,6 +82,8 @@ namespace GTAUtil
                                         }
                                         else
                                         {
+                                            arch = new MCBaseArchetypeDef();
+
                                             arch.Name = nameHash;
                                             arch.AssetName = nameHash;
                                             arch.TextureDictionary = nameHash;

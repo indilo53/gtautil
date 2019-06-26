@@ -76,6 +76,18 @@ namespace GTAUtil
     {
         [Option('i', "input", HelpText = "Input files")]
         public List<string> InputFiles { get; set; }
+
+        [Option("metadata", Default = false, HelpText = "Generate metadata")]
+        public bool Metadata { get; set; }
+
+        [Option("delete", HelpText = "Entities to delete")]
+        public List<string> Delete { get; set; }
+
+        [Option("deletemode", Default = "delete", HelpText = "Delete mode [delete|dummy]")]
+        public string DeleteMode { get; set; }
+
+        [Option("deletescope", Default = "full", HelpText = "Delete mode [full|children]")]
+        public string DeleteScope { get; set; }
     }
 
     [Verb("exportmeta")]
@@ -83,6 +95,9 @@ namespace GTAUtil
     {
         [Option('i', "input", HelpText = "Input files")]
         public List<string> InputFiles { get; set; }
+
+        [Option("metadata", Default = false, HelpText = "Parse metadata")]
+        public bool Metadata { get; set; }
     }
 
     [Verb("injectentities")]
@@ -223,6 +238,29 @@ namespace GTAUtil
         [Option('m', "mode", Default = "copy")]
         public string Mode { get; set; }
 
+    }
+
+    [Verb("ymaptoydr")]
+    public class YmapToYdrOptions
+    {
+        [Option('i', "input", HelpText = "Input file")]
+        public string InputFile { get; set; }
+
+        [Option('o', "output", HelpText = "Output file")]
+        public string OutputFile { get; set; }
+    }
+
+    [Verb("compiledrawableshaders")]
+    public class CompileDrawableShadersOptions
+    {
+
+    }
+
+    [Verb("daemon")]
+    public class DaemonOptions
+    {
+        [Option('p', "port", Default = 1337, HelpText = "Input file")]
+        public int Port { get; set; }
     }
 
     [Verb("test")]
