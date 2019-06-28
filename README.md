@@ -218,7 +218,7 @@ gtautil genlodlights --create -o path/to/directory
 2) Remove LOD lights from project (modified files will be in **path/to/directory/modified** folder)
 
 ```powershell
-gtautil genlodlights --delete -i . --position 0,0,0 --radius 200
+gtautil genlodlights --delete -i path/to/directory --position 0,0,0 --radius 200
 ```
 
 
