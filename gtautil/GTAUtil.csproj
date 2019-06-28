@@ -60,6 +60,8 @@
     <Compile Include="Commandline\Commandline.cs" />
     <Compile Include="Commandline\Options.cs" />
     <Compile Include="Program\CompileDrawableShaders.cs" />
+    <Compile Include="Program\FindProps.cs" />
+    <Compile Include="Program\GenLODLights.cs" />
     <Compile Include="Program\GenCol.cs" />
     <Compile Include="Program\ExtractArchive.cs" />
     <Compile Include="Program\CreateArchive.cs" />

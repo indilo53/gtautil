@@ -287,4 +287,40 @@ namespace GTAUtil
 
     }
 
+    [Verb("genlodlights")]
+    public class GenLODLigthsOptions
+    {
+        [Option('c', "create", Default = false, HelpText = "Create project")]
+        public bool CreateMode { get; set; }
+
+        [Option('d', "delete", Default = false, HelpText = "Delete lights")]
+        public bool DeleteMode { get; set; }
+
+        [Option('p', "position", HelpText = "Position")]
+        public List<float> Position { get; set; }
+
+        [Option('r', "radius", Default = 1.0f, HelpText = "Position")]
+        public float Radius { get; set; }
+
+        [Option('i', "input", HelpText = "Input directory")]
+        public string InputDirectory { get; set; }
+
+        [Option('o', "output", HelpText = "Output directory")]
+        public string OutputDirectory { get; set; }
+    }
+
+    [Verb("findprops")]
+    public class FindPropsOptions
+    {
+
+        [Option('i', "input", HelpText = "Input files")]
+        public List<string> InputFiles { get; set; }
+
+        [Option('p', "position", HelpText = "Position")]
+        public List<float> Position { get; set; }
+
+        [Option('r', "radius", Default = 1.0f, HelpText = "Radius")]
+        public float Radius { get; set; }
+    }
+
 }

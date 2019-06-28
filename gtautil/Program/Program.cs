@@ -57,6 +57,8 @@ namespace GTAUtil
             HandleExportMetaOptions(args);
             HandleExtractEntitiesOptions(args);
             HandleFindOptions(args);
+            HandleFindPropsOptions(args);
+            HandleGenLODLightsOptions(args);
             HandleGenPedDefsOptions(args);
             HandleGenPropDefsOptions(args);
             HandleGetDLCListOptions(args);
