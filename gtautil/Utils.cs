@@ -282,8 +282,8 @@ namespace GTAUtil
 
             rotationDiff.Normalize();
 
-            newPos -= mloWorldPosition;    // Substract mlo world coords from entity world coords
-            newPos = Utils.RotateTransform(Quaternion.Invert(mloWorldRotation), position, Vector3.Zero);   // Rotate entity around center of mlo instance (mlo entities rotations in space are inverted)
+            newPos -=mloWorldPosition;    // Substract mlo world coords from entity world coords
+            newPos = Utils.RotateTransform(Quaternion.Invert(mloWorldRotation), newPos, Vector3.Zero);   // Rotate entity around center of mlo instance (mlo entities rotations in space are inverted)
 
             var newRot = new Vector4(rotationDiff.X, rotationDiff.Y, rotationDiff.Z, rotationDiff.W);
 
