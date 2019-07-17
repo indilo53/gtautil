@@ -288,6 +288,7 @@ namespace GTAUtil
                     var matchMinOrder = minOrderRegex.Match(xml);
                     var matchPath = pathRegex.Match(fullFileName);
                     var matchPath2 = pathRegex2.Match(fullFileName);
+
                     var dlcName = matchPath.Success ? matchPath.Groups[1].Value : matchPath2.Groups[1].Value;
 
                     dlcOrders[dlcName] = new Tuple<int, int>(matchOrder.Success ? int.Parse(matchOrder.Groups[1].Value) : 0, matchMinOrder.Success ? int.Parse(matchMinOrder.Groups[1].Value) : 0);
@@ -298,8 +299,17 @@ namespace GTAUtil
             {
                 foreach (XmlNode itemnode in pathsnode.ChildNodes)
                 {
-                    string[] path = itemnode.InnerText.ToLowerInvariant().Split('/');
-                    dlclist.Add(path[path.Length - 2]);
+                    string p      = itemnode.InnerText.ToLowerInvariant();
+                    string[] path = p.Split('/');
+
+                    if(path.Length - 2 < 0)
+                    {
+                        Console.Error.WriteLine("Ignoring " + p);
+                    }
+                    else
+                    {
+                        dlclist.Add(path[path.Length - 2]);
+                    }
                 }
             }
 
