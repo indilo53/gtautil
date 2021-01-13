@@ -140,8 +140,9 @@ namespace GTAUtil
 
                     foreach (var item in modified)
                     {
-                        item.Value.Save(opts.InputDirectory + "\\" + item.Key + ".ymap");
-                        item.Value.Save(opts.InputDirectory + "\\modified\\" + item.Key + ".ymap");
+                        var descendant = item.Key.Substring(item.Key.LastIndexOf("\\"));
+                        item.Value.Save(opts.InputDirectory + "\\" + descendant + ".ymap");
+                        item.Value.Save(opts.InputDirectory + "\\modified\\" + descendant + ".ymap");
                     }
                 }
 
