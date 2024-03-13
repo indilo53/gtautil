@@ -525,7 +525,7 @@ namespace GTAUtil
                                 continue;
 
                             int count = cCount[component];
-                            int max = (opts.ReservePropEntries > count) ? opts.ReservePropEntries : count;
+                            int max = (opts.ReserveEntries > count) ? opts.ReserveEntries : count;
                             var def = ymt.Unk_376833625.Components[component] ?? new MUnk_3538495220();
 
                             for (int i = count; i < max; i++)
